@@ -294,48 +294,6 @@
                 <artifactId>commons-lang3</artifactId>
                 <version>3.3.2</version>
             </dependency>
-            <dependency>
-                <groupId>javaml</groupId>
-                <artifactId>javaml</artifactId>
-                <version>0.1.7</version>
-                <scope>system</scope>
-                <systemPath>${project.basedir}/javaml-0.1.7/javaml-0.1.7.jar</systemPath>
-            </dependency>
-            <dependency>
-                <groupId>javaml</groupId>
-                <artifactId>ajt</artifactId>
-                <version>2.9</version>
-                <scope>system</scope>
-                <systemPath>${project.basedir}/javaml-0.1.7/lib/ajt-2.9.jar</systemPath>
-            </dependency>
-            <dependency>
-                <groupId>javaml</groupId>
-                <artifactId>commons-math</artifactId>
-                <version>1.2</version>
-                <scope>system</scope>
-                <systemPath>${project.basedir}/javaml-0.1.7/lib/commons-math-1.2.jar</systemPath>
-            </dependency>
-            <dependency>
-                <groupId>javaml</groupId>
-                <artifactId>Jama</artifactId>
-                <version>1.0.2</version>
-                <scope>system</scope>
-                <systemPath>${project.basedir}/javaml-0.1.7/lib/Jama-1.0.2.jar</systemPath>
-            </dependency>
-            <dependency>
-                <groupId>javaml</groupId>
-                <artifactId>libsvm</artifactId>
-                <version>0.1.7</version>
-                <scope>system</scope>
-                <systemPath>${project.basedir}/javaml-0.1.7/lib/libsvm.jar</systemPath>
-            </dependency>
-            <dependency>
-                <groupId>javaml</groupId>
-                <artifactId>weka</artifactId>
-                <version>0.1.7</version>
-                <scope>system</scope>
-                <systemPath>${project.basedir}/javaml-0.1.7/lib/weka.jar</systemPath>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>
