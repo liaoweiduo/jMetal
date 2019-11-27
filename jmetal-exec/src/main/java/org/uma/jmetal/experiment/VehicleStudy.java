@@ -1,9 +1,13 @@
 package org.uma.jmetal.experiment;
 
 import org.uma.jmetal.algorithm.Algorithm;
+import org.uma.jmetal.algorithm.multiobjective.moead.AbstractMOEAD;
+import org.uma.jmetal.algorithm.multiobjective.moead.MOEADBuilder;
 import org.uma.jmetal.algorithm.multiobjective.nsgaii.NSGAIIBuilder;
 import org.uma.jmetal.algorithm.multiobjective.smpso.SMPSOBuilder;
 import org.uma.jmetal.algorithm.multiobjective.spea2.SPEA2Builder;
+import org.uma.jmetal.operator.MutationOperator;
+import org.uma.jmetal.operator.impl.crossover.DifferentialEvolutionCrossover;
 import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.problem.DoubleProblem;
@@ -104,26 +108,13 @@ public class VehicleStudy {
     for (int run = 0; run < INDEPENDENT_RUNS; run++) {
 
       for (int i = 0; i < problemList.size(); i++) {
-        double mutationProbability = 1.0 / problemList.get(i).getProblem().getNumberOfVariables();
-        double mutationDistributionIndex = 20.0;
-        Algorithm<List<DoubleSolution>> algorithm = new SMPSOBuilder(
-                (DoubleProblem) problemList.get(i).getProblem(),
-                new CrowdingDistanceArchive<DoubleSolution>(100))
-                .setMutation(new PolynomialMutation(mutationProbability, mutationDistributionIndex))
-                .setMaxIterations(250)
-                .setSwarmSize(100)
-                .setSolutionListEvaluator(new SequentialSolutionListEvaluator<DoubleSolution>())
-                .build();
-        algorithms.add(new ExperimentAlgorithm<>(algorithm, problemList.get(i), run));
-      }
-
-      for (int i = 0; i < problemList.size(); i++) {
         Algorithm<List<DoubleSolution>> algorithm = new NSGAIIBuilder<DoubleSolution>(
                 problemList.get(i).getProblem(),
                 new SBXCrossover(1.0, 20.0),
                 new PolynomialMutation(1.0 / problemList.get(i).getProblem().getNumberOfVariables(),
                         20.0),
-                100)
+                problemList.get(i).getProblem().getNumberOfVariables())
+                .setMaxEvaluations(problemList.get(i).getProblem().getNumberOfVariables() * 200)
                 .build();
         algorithms.add(new ExperimentAlgorithm<>(algorithm, problemList.get(i), run));
       }
@@ -134,7 +125,35 @@ public class VehicleStudy {
                 new SBXCrossover(1.0, 10.0),
                 new PolynomialMutation(1.0 / problemList.get(i).getProblem().getNumberOfVariables(),
                         20.0))
+                .setMaxIterations(200)
+                .setPopulationSize(problemList.get(i).getProblem().getNumberOfVariables())
                 .build();
+        algorithms.add(new ExperimentAlgorithm<>(algorithm, problemList.get(i), run));
+      }
+
+      for (int i = 0; i < problemList.size(); i++) {
+        MutationOperator<DoubleSolution> mutation;
+        DifferentialEvolutionCrossover crossover;
+        double cr = 0.6 ;
+        double f = 0.7 ;
+        crossover = new DifferentialEvolutionCrossover(cr, f, "rand/1/bin");
+        double mutationProbability = 1.0 / problemList.get(i).getProblem().getNumberOfVariables();
+        double mutationDistributionIndex = 20.0;
+        mutation = new PolynomialMutation(mutationProbability, mutationDistributionIndex);
+        Algorithm<List<DoubleSolution>> algorithm = new MOEADBuilder(
+                problemList.get(i).getProblem(),
+                MOEADBuilder.Variant.MOEAD)
+                .setCrossover(crossover)
+                .setMutation(mutation)
+                .setMaxEvaluations(200 * problemList.get(i).getProblem().getNumberOfVariables())
+                .setPopulationSize(problemList.get(i).getProblem().getNumberOfVariables())
+                .setResultPopulationSize(problemList.get(i).getProblem().getNumberOfVariables())
+                .setNeighborhoodSelectionProbability(0.85)
+                .setMaximumNumberOfReplacedSolutions(1)
+                .setNeighborSize(Math.max(problemList.get(i).getProblem().getNumberOfVariables() / 10, 4))
+                .setFunctionType(AbstractMOEAD.FunctionType.TCHE)
+                .setDataDirectory("MOEAD_Weights")
+                .build() ;
         algorithms.add(new ExperimentAlgorithm<>(algorithm, problemList.get(i), run));
       }
     }
