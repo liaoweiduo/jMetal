@@ -1,111 +1,85 @@
 package org.uma.jmetal.problem.multiobjective.FeatureSelection;
 
+import be.abeel.util.Pair;
+import net.sf.javaml.classification.KNearestNeighbors;
+import net.sf.javaml.core.Dataset;
+import net.sf.javaml.core.DefaultDataset;
+import net.sf.javaml.core.DenseInstance;
+import net.sf.javaml.core.Instance;
+import net.sf.javaml.sampling.Sampling;
+import net.sf.javaml.tools.data.FileHandler;
+
 import java.io.*;
 
 public class buildData {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        String basePath = "jmetal-problem/src/main/resources/classificationData/";
         int featuresNumber = 18;
         int instanceNumber = 846;
         String dataName = "Vehicle";
-        readAndWriteAll(dataName,featuresNumber,instanceNumber);
-        devideTrainTest(dataName,featuresNumber,instanceNumber);
+        Dataset data = FileHandler.loadDataset(new File(basePath + dataName + "/xaa.dat"),18," ");
+        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xab.dat"),18," "));
+        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xac.dat"),18," "));
+        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xad.dat"),18," "));
+        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xae.dat"),18," "));
+        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xaf.dat"),18," "));
+        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xag.dat"),18," "));
+        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xah.dat"),18," "));
+        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xai.dat"),18," "));
+
+        // 7 3 sampling
+        Sampling s = Sampling.SubSampling;
+        Pair<Dataset, Dataset> datas = s.sample(data, (int)(data.size()*0.7));
+        Dataset dataTrain = datas.x();
+        Dataset dataTest = datas.y();
+        FileHandler.exportDataset(data,new File(basePath + dataName + "/" + dataName +".dat"));
+        FileHandler.exportDataset(dataTrain,new File(basePath + dataName + "/train.dat"));
+        FileHandler.exportDataset(dataTest,new File(basePath + dataName + "/test.dat"));
+
+        // calculate the total error rate
+        KNearestNeighbors knn = new KNearestNeighbors(5);
+        knn.buildClassifier(dataTrain);
+        int wrong = 0;
+        /* Classify all instances and check with the correct class values */
+        for (Instance inst : dataTest) {
+            Object predictedClassValue = knn.classify(inst);
+            Object realClassValue = inst.classValue();
+            if (!predictedClassValue.equals(realClassValue))
+                wrong++;
+        }
+        double errorRate = (double) wrong / dataTest.size();
+        System.out.println("error rate:" + errorRate);
+
+
+        // calculate accuracy of each single feature
+        double[] accuracyList = new double[featuresNumber];
+        for (int featureIndex = 0; featureIndex < featuresNumber; featureIndex++){
+            Dataset newDataTrain = new DefaultDataset();
+            Dataset newDataTest = new DefaultDataset();
+            for (Instance ins : dataTrain)
+                newDataTrain.add(new DenseInstance(new double[]{ins.value(featureIndex)},ins.classValue()));
+            for (Instance ins : dataTest)
+                newDataTest.add(new DenseInstance(new double[]{ins.value(featureIndex)},ins.classValue()));
+            knn = new KNearestNeighbors(5);
+            knn.buildClassifier(newDataTrain);
+            int correct = 0;
+            /* Classify all instances and check with the correct class values */
+            for (Instance inst : newDataTest) {
+                Object predictedClassValue = knn.classify(inst);
+                Object realClassValue = inst.classValue();
+                if (!predictedClassValue.equals(realClassValue))
+                    correct++;
+            }
+            double accuracy = (double) correct / newDataTest.size();
+            accuracyList[featureIndex] = accuracy;
+            System.out.println("#"+featureIndex+" accuracy:" + accuracy);
+        }
+        BufferedWriter bw = new BufferedWriter(new FileWriter(new File(basePath + dataName + "/accuracy.dat"), true));
+        for (double a : accuracyList)
+            bw.write(Double.toString(a) + '\t');
+        bw.flush();
+        bw.close();
     }
 
-    static void readAndWriteAll(String dataName, int featuresNumber, int instanceNumber) {
-        double[][] data = new double[instanceNumber][featuresNumber];
-        String[] label = new String[instanceNumber];
-        int instanceIndex = 0;
-        try
-        {
-            BufferedReader br = new BufferedReader(new FileReader("jmetal-problem/src/main/resources/classificationData/"+ dataName + "/xaa.dat"));
-            String record;
-            while((record = br.readLine()) != null)
-            {
-                writeFile(record, "jmetal-problem/src/main/resources/classificationData/"+ dataName +"/"+ dataName +".dat");
-//                String[] splitedRecord = record.split("\t");
-//                for (int featureIndex = 0;featureIndex < featuresNumber;featureIndex++){
-//                    data[instanceIndex][featureIndex] = Double.parseDouble(splitedRecord[featureIndex]);
-//                }
-//                label[instanceIndex++] = splitedRecord[featuresNumber];
-            }
-
-            br = new BufferedReader(new FileReader("jmetal-problem/src/main/resources/classificationData/"+ dataName +"/xab.dat"));
-            while ((record = br.readLine())!=null){
-                writeFile(record, "jmetal-problem/src/main/resources/classificationData/"+ dataName +"/"+ dataName +".dat");
-            }
-            br = new BufferedReader(new FileReader("jmetal-problem/src/main/resources/classificationData/"+ dataName +"/xac.dat"));
-            while ((record = br.readLine())!=null){
-                writeFile(record, "jmetal-problem/src/main/resources/classificationData/"+ dataName +"/"+ dataName +".dat");
-            }
-            br = new BufferedReader(new FileReader("jmetal-problem/src/main/resources/classificationData/"+ dataName +"/xad.dat"));
-            while ((record = br.readLine())!=null){
-                writeFile(record, "jmetal-problem/src/main/resources/classificationData/"+ dataName +"/"+ dataName +".dat");
-            }
-            br = new BufferedReader(new FileReader("jmetal-problem/src/main/resources/classificationData/"+ dataName +"/xae.dat"));
-            while ((record = br.readLine())!=null){
-                writeFile(record, "jmetal-problem/src/main/resources/classificationData/"+ dataName +"/"+ dataName +".dat");
-            }
-            br = new BufferedReader(new FileReader("jmetal-problem/src/main/resources/classificationData/"+ dataName +"/xaf.dat"));
-            while ((record = br.readLine())!=null){
-                writeFile(record, "jmetal-problem/src/main/resources/classificationData/"+ dataName +"/"+ dataName +".dat");
-            }
-            br = new BufferedReader(new FileReader("jmetal-problem/src/main/resources/classificationData/"+ dataName +"/xag.dat"));
-            while ((record = br.readLine())!=null){
-                writeFile(record, "jmetal-problem/src/main/resources/classificationData/"+ dataName +"/"+ dataName +".dat");
-            }
-            br = new BufferedReader(new FileReader("jmetal-problem/src/main/resources/classificationData/"+ dataName +"/xah.dat"));
-            while ((record = br.readLine())!=null){
-                writeFile(record, "jmetal-problem/src/main/resources/classificationData/"+ dataName +"/"+ dataName +".dat");
-            }
-            br = new BufferedReader(new FileReader("jmetal-problem/src/main/resources/classificationData/"+ dataName +"/xai.dat"));
-            while ((record = br.readLine())!=null){
-                writeFile(record, "jmetal-problem/src/main/resources/classificationData/"+ dataName +"/"+ dataName +".dat");
-            }
-
-        }
-        catch(Exception e)
-        {
-            System.out.print(e.toString());
-        }
-    }
-
-    static void writeFile(String content, String file)
-    {
-        try
-        {
-//            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)));
-            FileWriter fw = new FileWriter(file, true);   // append: 附加
-            PrintWriter out = new PrintWriter(fw);
-            out.println(content);
-            out.close();
-            fw.close();
-        }
-        catch (IOException e)
-        {
-            System.out.println("Uh oh, got an IOException error!");
-            e.printStackTrace();
-        }
-    }
-
-    static void devideTrainTest(String dataName, int featuresNumber, int instanceNumber){
-        String[][] data = new String[instanceNumber][featuresNumber];
-        String[] label = new String[instanceNumber];
-        int instanceIndex = 0;
-        try {
-            BufferedReader br = new BufferedReader(new FileReader("jmetal-problem/src/main/resources/classificationData/" + dataName + "/xaa.dat"));
-            String record;
-            while ((record = br.readLine()) != null) {
-                String[] splitedRecord = record.split("\t");
-                for (int featureIndex = 0;featureIndex < featuresNumber;featureIndex++){
-                    data[instanceIndex][featureIndex] = splitedRecord[featureIndex];
-                }
-                label[instanceIndex++] = splitedRecord[featuresNumber];
-            }
-        } catch (Exception e){
-            System.out.print(e.toString());
-        }
-
-
-    }
 }

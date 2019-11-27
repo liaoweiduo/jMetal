@@ -147,3 +147,10 @@ coverage
 .Rhistory
 
 *.png
+
+# Experiments results
+Experiments/*
+
+# Feature selection default database
+jmetal-problem/src/main/resources/classificationData/UCL-large/*
+jmetal-problem/src/main/resources/classificationData/UCI-small/*

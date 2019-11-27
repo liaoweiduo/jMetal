@@ -44,7 +44,7 @@ public class NSGAIIRunner extends AbstractAlgorithmRunner {
       problemName = args[0];
       referenceParetoFront = args[1];
     } else {
-      problemName = "org.uma.jmetal.problem.multiobjective.zdt.ZDT1" ;
+      problemName = "org.uma.jmetal.problem.multiobjective.FeatureSelection.Vehicle" ;
       referenceParetoFront = "jmetal-problem/src/test/resources/pareto_fronts/ZDT1.pf";
     }
 
@@ -61,10 +61,10 @@ public class NSGAIIRunner extends AbstractAlgorithmRunner {
     selection = new BinaryTournamentSelection<DoubleSolution>(
             new RankingAndCrowdingDistanceComparator<DoubleSolution>());
 
-    int populationSize = 100 ;
+    int populationSize = problem.getNumberOfVariables() ;
     algorithm = new NSGAIIBuilder<DoubleSolution>(problem, crossover, mutation, populationSize)
             .setSelectionOperator(selection)
-            .setMaxEvaluations(25000)
+            .setMaxEvaluations(200 * problem.getNumberOfVariables())
             .build();
 
     AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(algorithm)

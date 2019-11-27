@@ -1,7 +1,16 @@
 package org.uma.jmetal.problem.multiobjective.FeatureSelection;
 
+import net.sf.javaml.classification.KNearestNeighbors;
+import net.sf.javaml.core.Dataset;
+import net.sf.javaml.core.DefaultDataset;
+import net.sf.javaml.core.DenseInstance;
+import net.sf.javaml.core.Instance;
 import org.uma.jmetal.problem.impl.AbstractDoubleProblem;
 import org.uma.jmetal.solution.DoubleSolution;
+import org.uma.jmetal.util.JMetalException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Basic Feature Selection Problem
@@ -9,38 +18,35 @@ import org.uma.jmetal.solution.DoubleSolution;
 @SuppressWarnings("serial")
 public abstract class FeatureSelection extends AbstractDoubleProblem {
 
-    private double[][] dataTrain;
-    private String[] labelTrain;
-    private double[][] dataTest;
-    private String[] labelTest;
-    private double[] accuracy;
+    private Dataset dataTrain;
+    private Dataset dataTest;
+    private double[] accuracyList;
     private double threshold;   // variable value > threshold: feature choosen
 
     /**
      * fill data and calculation of each single feature error rate
      *
      * @param dataTrain train data
-     * @param labelTrain train data label
      * @param dataTest test data
-     * @param labelTest test data label
+     * @param accuracyList accuracy of each feature
      */
-    public void fullfillData(double[][] dataTrain, String[] labelTrain, double[][] dataTest, String[] labelTest) {
+    public void fullfillData(Dataset dataTrain, Dataset dataTest, double[] accuracyList) {
         this.dataTrain = dataTrain;
-        this.labelTrain = labelTrain;
         this.dataTest = dataTest;
-        this.labelTest = labelTest;
+        this.accuracyList = accuracyList;
         this.threshold = 0.6;
-        // calculation of accuracy with only use the single feature.
-        this.accuracy = new double[dataTrain[0].length];
-        for (int featureIndex = 0; featureIndex < dataTrain[0].length; featureIndex++){
-            double[][] newDataTrain = new double[dataTrain.length][1];
-            double[][] newDataTest = new double[dataTest.length][1];
-            for (int i = 0; i < dataTrain.length; i++)
-                newDataTrain[i][1] = dataTrain[i][featureIndex];
-            for (int i = 0; i < dataTest.length; i++)
-                newDataTest[i][1] = dataTest[i][featureIndex];
-            this.accuracy[featureIndex] = new KNN(newDataTrain,labelTrain,newDataTest,labelTest).getErrorRate();
+
+        List<Double> lowerLimit = new ArrayList<>(getNumberOfVariables()) ;
+        List<Double> upperLimit = new ArrayList<>(getNumberOfVariables()) ;
+
+        for (int i = 0; i < getNumberOfVariables(); i++) {
+            lowerLimit.add(0.0);
+            upperLimit.add(1.0);
         }
+
+        setLowerLimit(lowerLimit);
+        setUpperLimit(upperLimit);
+
     }
 
     @Override
@@ -50,16 +56,31 @@ public abstract class FeatureSelection extends AbstractDoubleProblem {
 
         double[] f = new double[numberOfObjectives];
 
-        double[][] newDataTrain = getSelectedFeatureData(solution, dataTrain);
-        double[][] newDataTest = getSelectedFeatureData(solution, dataTest);
-
         int numberOfSelectedFeatures = getSelectedFeatureNumber(solution);
         f[0] = numberOfSelectedFeatures / (double)numberOfVariables;
 
-        if (numberOfSelectedFeatures == 0)
-            f[1] = 1;
-        else
-            f[1] = new KNN(newDataTrain,labelTrain,newDataTest,labelTest).getErrorRate();
+        double errorRate = 0;
+        if (numberOfSelectedFeatures == 0)      // if no feature is selected, the error rate is 1
+            errorRate = 1;
+        else{
+            Dataset newDataTrain = getSelectedFeatureData(solution, dataTrain);
+            Dataset newDataTest = getSelectedFeatureData(solution, dataTest);
+
+            KNearestNeighbors knn = new KNearestNeighbors(5);
+            knn.buildClassifier(newDataTrain);
+
+            int wrong = 0;
+            /* Classify all instances and check with the correct class values */
+            for (Instance inst : newDataTest) {
+                Object predictedClassValue = knn.classify(inst);
+                Object realClassValue = inst.classValue();
+                if (!predictedClassValue.equals(realClassValue))
+                    wrong++;
+            }
+            errorRate = (double) wrong / newDataTest.size();
+//            System.out.println(errorRate);
+        }
+            f[1] = errorRate;
 
         for (int i = 0; i < numberOfObjectives; i++) {
             solution.setObjective(i, f[i]);
@@ -86,64 +107,30 @@ public abstract class FeatureSelection extends AbstractDoubleProblem {
 
 
     /**
-     * return the selected features index
+     * return the data with selected features
      *
      * @param solution the target solution
      * @param data the target data
-     * @return the bool list with the same length with solution variable 0 is not-selected; 1 is selected.
+     * @return the dataset with selected features
      */
-    public double[][] getSelectedFeatureData(DoubleSolution solution, double[][] data){
+    public Dataset getSelectedFeatureData(DoubleSolution solution, Dataset data){
         int numberOfVariables = getNumberOfVariables();
         int numberOfSelectedFeatures = getSelectedFeatureNumber(solution);
-        double[][] newData = new double[data.length][numberOfSelectedFeatures];
-        for (int line = 0; line < data.length; line++) {
+        Dataset newData = new DefaultDataset();
+        if (numberOfSelectedFeatures == 0)
+            throw (new JMetalException("number of selected features: 0"));
+
+        for (Instance ins : data){
+            double[] selectedFeatureData = new double[numberOfSelectedFeatures];
             int selectedFeatureIndex = 0;
             for (int index = 0; index < numberOfVariables; index++) {
-                double variableValue = solution.getVariableValue(index);
-                if (variableValue > threshold)
-                    newData[line][selectedFeatureIndex++] = data[line][index];
+                if (solution.getVariableValue(index) > threshold)
+                    selectedFeatureData[selectedFeatureIndex++] = ins.get(index);
             }
+            newData.add(new DenseInstance(selectedFeatureData, ins.classValue()));
         }
+
         return newData;
     }
 
-    public double[][] getDataTrain() {
-        return dataTrain;
-    }
-
-    public void setDataTrain(double[][] dataTrain) {
-        this.dataTrain = dataTrain;
-    }
-
-    public String[] getLabelTrain() {
-        return labelTrain;
-    }
-
-    public void setLabelTrain(String[] labelTrain) {
-        this.labelTrain = labelTrain;
-    }
-
-    public double[][] getDataTest() {
-        return dataTest;
-    }
-
-    public void setDataTest(double[][] dataTest) {
-        this.dataTest = dataTest;
-    }
-
-    public String[] getLabelTest() {
-        return labelTest;
-    }
-
-    public void setLabelTest(String[] labelTest) {
-        this.labelTest = labelTest;
-    }
-
-    public double[] getAccuracy() {
-        return accuracy;
-    }
-
-    public void setAccuracy(double[] accuracy) {
-        this.accuracy = accuracy;
-    }
 }

@@ -8,6 +8,7 @@ import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.problem.DoubleProblem;
 import org.uma.jmetal.problem.Problem;
+import org.uma.jmetal.problem.multiobjective.FeatureSelection.Vehicle;
 import org.uma.jmetal.problem.multiobjective.dtlz.*;
 import org.uma.jmetal.qualityindicator.impl.*;
 import org.uma.jmetal.qualityindicator.impl.hypervolume.PISAHypervolume;
@@ -45,30 +46,29 @@ import java.util.List;
  * scripts to obtain boxplots
  */
 
-public class DTLZStudy {
+public class VehicleStudy {
 
   private static final int INDEPENDENT_RUNS = 2;
+  private static final String CLASS_NAME = new Object() {
+    public String getClassName() {
+      String clazzName = this.getClass().getName();
+      System.out.println(clazzName);
+      return clazzName.substring(clazzName.lastIndexOf('.') + 1,
+              clazzName.lastIndexOf('$'));
+    }
+  }.getClassName();
 
   public static void main(String[] args) throws IOException {
-    if (args.length != 1) {
-      throw new JMetalException("Missing argument: experimentBaseDirectory");
-    }
-    String experimentBaseDirectory = args[0];
+    String experimentBaseDirectory = (args.length == 1)? args[0]:"Experiments";
 
     List<ExperimentProblem<DoubleSolution>> problemList = new ArrayList<>();
-    problemList.add(new ExperimentProblem<>(new DTLZ1()).changeReferenceFrontTo("DTLZ1.3D.pf"));
-    problemList.add(new ExperimentProblem<>(new DTLZ2()).changeReferenceFrontTo("DTLZ1.3D.pf"));
-    problemList.add(new ExperimentProblem<>(new DTLZ3()).changeReferenceFrontTo("DTLZ1.3D.pf"));
-    problemList.add(new ExperimentProblem<>(new DTLZ4()).changeReferenceFrontTo("DTLZ1.3D.pf"));
-    problemList.add(new ExperimentProblem<>(new DTLZ5()).changeReferenceFrontTo("DTLZ1.3D.pf"));
-    problemList.add(new ExperimentProblem<>(new DTLZ6()).changeReferenceFrontTo("DTLZ1.3D.pf"));
-    problemList.add(new ExperimentProblem<>(new DTLZ7()).changeReferenceFrontTo("DTLZ1.3D.pf"));
+    problemList.add(new ExperimentProblem<>(new Vehicle()).changeReferenceFrontTo("DTLZ1.2D.pf"));
 
     List<ExperimentAlgorithm<DoubleSolution, List<DoubleSolution>>> algorithmList =
             configureAlgorithmList(problemList);
 
     Experiment<DoubleSolution, List<DoubleSolution>> experiment =
-            new ExperimentBuilder<DoubleSolution, List<DoubleSolution>>("DTLZStudy")
+            new ExperimentBuilder<DoubleSolution, List<DoubleSolution>>(CLASS_NAME)
                     .setAlgorithmList(algorithmList)
                     .setProblemList(problemList)
                     .setReferenceFrontDirectory("/pareto_fronts")
