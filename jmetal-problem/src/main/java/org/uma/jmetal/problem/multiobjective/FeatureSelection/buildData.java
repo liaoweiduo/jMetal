@@ -61,14 +61,14 @@ public class buildData {
                 newDataTrain.add(new DenseInstance(new double[]{ins.value(featureIndex)},ins.classValue()));
             for (Instance ins : dataTest)
                 newDataTest.add(new DenseInstance(new double[]{ins.value(featureIndex)},ins.classValue()));
-            knn = new KNearestNeighbors(5);
-            knn.buildClassifier(newDataTrain);
+            KNearestNeighbors knn1 = new KNearestNeighbors(5);
+            knn1.buildClassifier(newDataTrain);
             int correct = 0;
             /* Classify all instances and check with the correct class values */
             for (Instance inst : newDataTest) {
-                Object predictedClassValue = knn.classify(inst);
+                Object predictedClassValue = knn1.classify(inst);
                 Object realClassValue = inst.classValue();
-                if (!predictedClassValue.equals(realClassValue))
+                if (predictedClassValue.equals(realClassValue))
                     correct++;
             }
             double accuracy = (double) correct / newDataTest.size();
@@ -78,6 +78,7 @@ public class buildData {
         BufferedWriter bw = new BufferedWriter(new FileWriter(new File(basePath + dataName + "/accuracy.dat"), true));
         for (double a : accuracyList)
             bw.write(Double.toString(a) + '\t');
+        bw.write('\n');
         bw.flush();
         bw.close();
     }

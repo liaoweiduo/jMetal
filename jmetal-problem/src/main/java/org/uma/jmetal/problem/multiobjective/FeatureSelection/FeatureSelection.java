@@ -9,8 +9,7 @@ import org.uma.jmetal.problem.impl.AbstractDoubleProblem;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.JMetalException;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Basic Feature Selection Problem
@@ -30,7 +29,7 @@ public abstract class FeatureSelection extends AbstractDoubleProblem {
      * @param dataTest test data
      * @param accuracyList accuracy of each feature
      */
-    public void fullfillData(Dataset dataTrain, Dataset dataTest, double[] accuracyList) {
+    void fullfillData(Dataset dataTrain, Dataset dataTest, double[] accuracyList) {
         this.dataTrain = dataTrain;
         this.dataTest = dataTest;
         this.accuracyList = accuracyList;
@@ -59,7 +58,7 @@ public abstract class FeatureSelection extends AbstractDoubleProblem {
         int numberOfSelectedFeatures = getSelectedFeatureNumber(solution);
         f[0] = numberOfSelectedFeatures / (double)numberOfVariables;
 
-        double errorRate = 0;
+        double errorRate;
         if (numberOfSelectedFeatures == 0)      // if no feature is selected, the error rate is 1
             errorRate = 1;
         else{
@@ -93,7 +92,7 @@ public abstract class FeatureSelection extends AbstractDoubleProblem {
      * @param solution the target solution
      * @return number of selected features
      */
-    public int getSelectedFeatureNumber(DoubleSolution solution){
+    private int getSelectedFeatureNumber(DoubleSolution solution){
         int numberOfSelectedFeature = 0;
         int numberOfVariables = getNumberOfVariables();
         for (int index = 0; index < numberOfVariables; index++){
@@ -113,7 +112,7 @@ public abstract class FeatureSelection extends AbstractDoubleProblem {
      * @param data the target data
      * @return the dataset with selected features
      */
-    public Dataset getSelectedFeatureData(DoubleSolution solution, Dataset data){
+    private Dataset getSelectedFeatureData(DoubleSolution solution, Dataset data){
         int numberOfVariables = getNumberOfVariables();
         int numberOfSelectedFeatures = getSelectedFeatureNumber(solution);
         Dataset newData = new DefaultDataset();
@@ -133,4 +132,63 @@ public abstract class FeatureSelection extends AbstractDoubleProblem {
         return newData;
     }
 
+    /**
+     * reduce the selected features size based on the accuracy of each feature
+     * first remove the feature with less accuracy
+     * until the number of selected features match refRate * D (variable number)
+     *
+     * @param solution the target solution
+     * @param refRate the reference point of this subproblem
+     */
+    public void reduceSize (DoubleSolution solution, double refRate){
+        int numberOfVariables = getNumberOfVariables();
+        int numberOfSelectedFeatures = getSelectedFeatureNumber(solution);
+        int nref = (int) (refRate * numberOfVariables);
+
+        if (numberOfSelectedFeatures > nref) {
+            ArrayList<Double> selectedFeaturesAccuracy = new ArrayList<Double>();
+
+            for (int index = 0; index < numberOfVariables; index++) {
+                if (solution.getVariableValue(index) > threshold) {
+                    selectedFeaturesAccuracy.add(accuracyList[index]);
+                }
+            }
+            Arrays.sort(selectedFeaturesAccuracy.toArray());
+
+            for (int index = 0; index < numberOfSelectedFeatures - nref; index++) {
+                double selectedAccuracy = selectedFeaturesAccuracy.get(index);
+                int featurePosition = Arrays.binarySearch(accuracyList,selectedAccuracy);
+                solution.setVariableValue(featurePosition, Math.random() * threshold);  // the reduced variable value is set to a random number between 0 to threshold(0.6)
+            }
+        }
+    }
+
+    /**
+     * add the unselected features randomly
+     * first remove the feature with less accuracy
+     * until the number of selected features match refRate * D (variable number)
+     *
+     * @param solution the target solution
+     * @param refRate the reference point of this subproblem
+     */
+    public void increaseSize (DoubleSolution solution, double refRate){
+        int numberOfVariables = getNumberOfVariables();
+        int numberOfSelectedFeatures = getSelectedFeatureNumber(solution);
+        int numberOfUnSelectedFeatures = numberOfVariables - numberOfSelectedFeatures;
+        int nref = (int) (refRate * numberOfVariables);
+
+        ArrayList<Integer> unselectedFeaturesIndexList = new ArrayList<Integer>();
+        for (int index = 0; index < numberOfVariables; index++) {
+            if (solution.getVariableValue(index) < threshold) {
+                unselectedFeaturesIndexList.add(index);
+            }
+        }
+
+        Collections.shuffle(unselectedFeaturesIndexList);       //乱序排列index
+
+        for (int index = 0; index < nref - numberOfSelectedFeatures; index++) {
+            solution.setVariableValue(unselectedFeaturesIndexList.get(index), Math.random() * (1 - threshold) + threshold); // the added variable value is set to a random number between threshold(0.6) to 1
+        }
+
+    }
 }
