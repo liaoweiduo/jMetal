@@ -153,11 +153,24 @@ public abstract class FeatureSelection extends AbstractDoubleProblem {
                     selectedFeaturesAccuracy.add(accuracyList[index]);
                 }
             }
-            Arrays.sort(selectedFeaturesAccuracy.toArray());
+            selectedFeaturesAccuracy.sort(new Comparator<Double>() {
+                @Override
+                public int compare(Double o1, Double o2) {
+                    return (o1 > o2)?1:-1;
+                }
+            });
 
             for (int index = 0; index < numberOfSelectedFeatures - nref; index++) {
                 double selectedAccuracy = selectedFeaturesAccuracy.get(index);
-                int featurePosition = Arrays.binarySearch(accuracyList,selectedAccuracy);
+                int featurePosition = -1;
+                for (int i = 0; i < numberOfVariables ;i++){
+                    if (Math.abs(accuracyList[i] - selectedAccuracy) < 0.0001){
+                        featurePosition = i;
+                        break;
+                    }
+                }
+                if (featurePosition == -1)
+                    throw new JMetalException("reduceSize: do not find selected accuracy in accuracy list.");
                 solution.setVariableValue(featurePosition, Math.random() * threshold);  // the reduced variable value is set to a random number between 0 to threshold(0.6)
             }
         }

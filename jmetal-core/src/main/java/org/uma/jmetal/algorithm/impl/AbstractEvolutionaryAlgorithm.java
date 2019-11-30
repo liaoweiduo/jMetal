@@ -1,6 +1,7 @@
 package org.uma.jmetal.algorithm.impl;
 
 import org.uma.jmetal.algorithm.Algorithm;
+import org.uma.jmetal.algorithm.CenterResults;
 import org.uma.jmetal.problem.Problem;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 @SuppressWarnings("serial")
-public abstract class AbstractEvolutionaryAlgorithm<S, R>  implements Algorithm<R>{
+public abstract class AbstractEvolutionaryAlgorithm<S, R>  implements Algorithm<R>, CenterResults {
   protected List<S> population;
   protected Problem<S> problem ;
 
@@ -49,6 +50,9 @@ public abstract class AbstractEvolutionaryAlgorithm<S, R>  implements Algorithm<
 
   @Override public abstract R getResult();
 
+  @Override public List<List> getRecordSolutions() {
+    return recordSolutions;
+  }
   @Override public void run() {
     List<S> offspringPopulation;
     List<S> matingPopulation;

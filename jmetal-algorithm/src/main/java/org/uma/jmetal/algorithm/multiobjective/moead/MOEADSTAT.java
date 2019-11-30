@@ -23,7 +23,7 @@ public class MOEADSTAT extends AbstractMOEAD<DoubleSolution> {
 	public MOEADSTAT(Problem<DoubleSolution> problem,
 			int populationSize,
 			int resultPopulationSize,
-			int maxEvaluations,
+			int maxIteration,
 			CrossoverOperator<DoubleSolution> crossoverOperator,
 			MutationOperator<DoubleSolution> mutation,
 			FunctionType functionType,
@@ -31,7 +31,7 @@ public class MOEADSTAT extends AbstractMOEAD<DoubleSolution> {
 			double neighborhoodSelectionProbability,
 			int maximumNumberOfReplacedSolutions,
 			int neighborSize) {
-		super(problem, populationSize, resultPopulationSize, maxEvaluations, crossoverOperator, mutation, functionType,
+		super(problem, populationSize, resultPopulationSize, maxIteration, crossoverOperator, mutation, functionType,
 				dataDirectory, neighborhoodSelectionProbability, maximumNumberOfReplacedSolutions, neighborSize);
 
 		differentialEvolutionCrossover = (DifferentialEvolutionCrossover)crossoverOperator ;
@@ -94,7 +94,7 @@ public class MOEADSTAT extends AbstractMOEAD<DoubleSolution> {
 
 //			updateExternalPopulation();
 			iterations++;
-		} while (evaluations < maxEvaluations);
+		} while (iterations < maxEvaluations);
 	}
 
 	/**
@@ -324,11 +324,11 @@ public class MOEADSTAT extends AbstractMOEAD<DoubleSolution> {
 
 	/**
 	 * this is designed for FS
-	 * @param individual
-	 * @return
-	 * @throws JMetalException
+	 * @param individual the doubleSolution
+	 * @return fitness value
+	 * @throws JMetalException not a bi-objective problem
 	 */
-	public double fitnessFunction(DoubleSolution individual, double refPoint) throws JMetalException{
+	private double fitnessFunction(DoubleSolution individual, double refPoint) throws JMetalException{
 		double fitness = 0;
 		if(problem.getNumberOfObjectives() != 2){
 			System.out.println("This is designed for feature selection only!!");
@@ -354,5 +354,4 @@ public class MOEADSTAT extends AbstractMOEAD<DoubleSolution> {
 	public void setWeight(double weight){
 		this.weight = weight;
 	}
-
 }

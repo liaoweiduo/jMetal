@@ -2,6 +2,7 @@ package org.uma.jmetal.util;
 
 import org.uma.jmetal.qualityindicator.impl.*;
 import org.uma.jmetal.qualityindicator.impl.hypervolume.PISAHypervolume;
+import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.fileoutput.SolutionListOutput;
 import org.uma.jmetal.util.fileoutput.impl.DefaultFileOutputContext;
@@ -29,15 +30,32 @@ public abstract class AbstractAlgorithmRunner {
 
     new SolutionListOutput(population)
         .setSeparator("\t")
-        .setVarFileOutputContext(new DefaultFileOutputContext("VAR.tsv"))
-        .setFunFileOutputContext(new DefaultFileOutputContext("FUN.tsv"))
+        .setVarFileOutputContext(new DefaultFileOutputContext("Data/VAR.tsv"))
+        .setFunFileOutputContext(new DefaultFileOutputContext("Data/FUN.tsv"))
         .print();
 
     JMetalLogger.logger.info("Random seed: " + JMetalRandom.getInstance().getSeed());
     JMetalLogger.logger.info("Objectives values have been written to file FUN.tsv");
     JMetalLogger.logger.info("Variables values have been written to file VAR.tsv");
   }
+  /**
+   * Write the record population into files and prints some data on screen
+   * @param RecordPopulation
+   */
+  public static void printRecordSolutionSet(List<List> RecordPopulation) {
 
+    for (int i = 0; i < RecordPopulation.size(); i++) {
+      new SolutionListOutput(RecordPopulation.get(i))
+              .setSeparator("\t")
+              .setVarFileOutputContext(new DefaultFileOutputContext("Data/VAR_"+i+".tsv"))
+              .setFunFileOutputContext(new DefaultFileOutputContext("Data/FUN_"+i+".tsv"))
+              .print();
+    }
+
+    JMetalLogger.logger.info("Random seed: " + JMetalRandom.getInstance().getSeed());
+    JMetalLogger.logger.info("Objectives values have been written to file FUN.tsv");
+    JMetalLogger.logger.info("Variables values have been written to file VAR.tsv");
+  }
   /**
    * Print all the available quality indicators
    * @param population
