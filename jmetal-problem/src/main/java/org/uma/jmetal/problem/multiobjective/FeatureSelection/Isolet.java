@@ -7,6 +7,7 @@ import org.uma.jmetal.util.JMetalException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 
 public class Isolet extends FeatureSelection {
 
@@ -36,7 +37,7 @@ public class Isolet extends FeatureSelection {
                 accuracyList[index] = Double.parseDouble(splitedRecord[index]);
             }
             fullfillData(dataTrain, dataTest, accuracyList);
-        }catch (Exception e){
+        }catch (IOException e){
             throw new JMetalException("Error reading data ", e) ;
         }
     }
