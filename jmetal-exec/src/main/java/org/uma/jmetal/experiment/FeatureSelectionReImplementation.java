@@ -49,7 +49,7 @@ import java.util.List;
 
 public class FeatureSelectionReImplementation {
 
-  private static final int INDEPENDENT_RUNS = 1;
+  private static final int INDEPENDENT_RUNS = 20;
   private static final String CLASS_NAME = new Object() {
     public String getClassName() {
       String clazzName = this.getClass().getName();
