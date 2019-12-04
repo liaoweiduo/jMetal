@@ -64,7 +64,7 @@ public class MOEADSTATRunner extends AbstractAlgorithmRunner {
                 .setMutation(mutation)
                 .setMaxEvaluations(200)
                 .setPopulationSize(Math.min(problem.getNumberOfVariables(),200))
-                .setResultPopulationSize(problem.getNumberOfVariables())
+                .setResultPopulationSize(Math.min(problem.getNumberOfVariables(),200))
                 .setNeighborhoodSelectionProbability(0.85)
                 .setMaximumNumberOfReplacedSolutions(1)
                 .setNeighborSize(Math.max(problem.getNumberOfVariables() / 10, 4))

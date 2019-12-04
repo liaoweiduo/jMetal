@@ -156,7 +156,13 @@ public abstract class FeatureSelection extends AbstractDoubleProblem {
             selectedFeaturesAccuracy.sort(new Comparator<Double>() {
                 @Override
                 public int compare(Double o1, Double o2) {
-                    return (o1 > o2)?1:-1;
+                    if (o1 > o2)
+                        return 1;
+                    else if (o1 < o2)
+                        return -1;
+                    else
+                        return 0;
+//                    return (o1 > o2)?1:-1;
                 }
             });
 

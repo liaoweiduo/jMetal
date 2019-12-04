@@ -53,8 +53,8 @@ public abstract class AbstractAlgorithmRunner {
     }
 
     JMetalLogger.logger.info("Random seed: " + JMetalRandom.getInstance().getSeed());
-    JMetalLogger.logger.info("Objectives values have been written to file FUN.tsv");
-    JMetalLogger.logger.info("Variables values have been written to file VAR.tsv");
+    JMetalLogger.logger.info("Record Objectives values have been written to file FUN_i.tsv");
+    JMetalLogger.logger.info("Record Variables values have been written to file VAR_i.tsv");
   }
   /**
    * Print all the available quality indicators
