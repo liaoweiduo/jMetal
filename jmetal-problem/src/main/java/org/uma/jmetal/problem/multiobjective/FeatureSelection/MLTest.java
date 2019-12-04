@@ -22,16 +22,16 @@ import java.util.Random;
 public class MLTest {
 
     public static void main(String[] args) throws Exception{
-        String dataName = "Vehicle";
-        Dataset data = FileHandler.loadDataset(new File("jmetal-problem/src/main/resources/classificationData/"+ dataName + "/xaa.dat"),18," ");
-        data.addAll(FileHandler.loadDataset(new File("jmetal-problem/src/main/resources/classificationData/"+ dataName + "/xab.dat"),18," "));
-        data.addAll(FileHandler.loadDataset(new File("jmetal-problem/src/main/resources/classificationData/"+ dataName + "/xac.dat"),18," "));
-        data.addAll(FileHandler.loadDataset(new File("jmetal-problem/src/main/resources/classificationData/"+ dataName + "/xad.dat"),18," "));
-        data.addAll(FileHandler.loadDataset(new File("jmetal-problem/src/main/resources/classificationData/"+ dataName + "/xae.dat"),18," "));
-        data.addAll(FileHandler.loadDataset(new File("jmetal-problem/src/main/resources/classificationData/"+ dataName + "/xaf.dat"),18," "));
-        data.addAll(FileHandler.loadDataset(new File("jmetal-problem/src/main/resources/classificationData/"+ dataName + "/xag.dat"),18," "));
-        data.addAll(FileHandler.loadDataset(new File("jmetal-problem/src/main/resources/classificationData/"+ dataName + "/xah.dat"),18," "));
-        data.addAll(FileHandler.loadDataset(new File("jmetal-problem/src/main/resources/classificationData/"+ dataName + "/xai.dat"),18," "));
+        String dataName = "Isolet";
+        Dataset data = FileHandler.loadDataset(new File("jmetal-problem/src/main/resources/classificationData/"+ dataName + "/" +dataName + ".dat"),0,"\t");
+//        data.addAll(FileHandler.loadDataset(new File("jmetal-problem/src/main/resources/classificationData/"+ dataName + "/xab.dat"),18," "));
+//        data.addAll(FileHandler.loadDataset(new File("jmetal-problem/src/main/resources/classificationData/"+ dataName + "/xac.dat"),18," "));
+//        data.addAll(FileHandler.loadDataset(new File("jmetal-problem/src/main/resources/classificationData/"+ dataName + "/xad.dat"),18," "));
+//        data.addAll(FileHandler.loadDataset(new File("jmetal-problem/src/main/resources/classificationData/"+ dataName + "/xae.dat"),18," "));
+//        data.addAll(FileHandler.loadDataset(new File("jmetal-problem/src/main/resources/classificationData/"+ dataName + "/xaf.dat"),18," "));
+//        data.addAll(FileHandler.loadDataset(new File("jmetal-problem/src/main/resources/classificationData/"+ dataName + "/xag.dat"),18," "));
+//        data.addAll(FileHandler.loadDataset(new File("jmetal-problem/src/main/resources/classificationData/"+ dataName + "/xah.dat"),18," "));
+//        data.addAll(FileHandler.loadDataset(new File("jmetal-problem/src/main/resources/classificationData/"+ dataName + "/xai.dat"),18," "));
 
         // 7 3 sampling
         Sampling s = Sampling.SubSampling;
@@ -39,7 +39,12 @@ public class MLTest {
         Dataset dataTrain = datas.x();
         Dataset dataTest = datas.y();
 
+//        Dataset dataTrain_temp = new DefaultDataset();
+//        for (int i = 0;i<10;i++){
+//            dataTrain_temp.add(dataTrain.get(i));
+//        }
         KNearestNeighbors knn = new KNearestNeighbors(5);
+
         knn.buildClassifier(dataTrain);
 
         int wrong = 0;

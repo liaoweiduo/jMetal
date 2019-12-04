@@ -15,18 +15,26 @@ public class buildData {
 
     public static void main(String[] args) throws IOException {
         String basePath = "jmetal-problem/src/main/resources/classificationData/";
-        int featuresNumber = 18;
-        int instanceNumber = 846;
-        String dataName = "Vehicle";
-        Dataset data = FileHandler.loadDataset(new File(basePath + dataName + "/xaa.dat"),18," ");
-        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xab.dat"),18," "));
-        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xac.dat"),18," "));
-        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xad.dat"),18," "));
-        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xae.dat"),18," "));
-        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xaf.dat"),18," "));
-        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xag.dat"),18," "));
-        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xah.dat"),18," "));
-        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xai.dat"),18," "));
+        int featuresNumber = 617;
+        int instanceNumber = 7797;
+        String dataName = "Isolet";
+        Dataset data = FileHandler.loadDataset(new File(basePath + dataName + "/data.dat"),0,",");
+//        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/madelon_valid.data")));
+//        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xac.dat"),18," "));
+//        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xad.dat"),18," "));
+//        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xae.dat"),18," "));
+//        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xaf.dat"),18," "));
+//        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xag.dat"),18," "));
+//        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xah.dat"),18," "));
+//        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xai.dat"),18," "));
+
+
+
+        // pre process data
+//        for (Instance ins : data){
+//            ins.removeAttribute(0);
+//            ins.removeAttribute(0);
+//        }
 
         // 7 3 sampling
         Sampling s = Sampling.SubSampling;
