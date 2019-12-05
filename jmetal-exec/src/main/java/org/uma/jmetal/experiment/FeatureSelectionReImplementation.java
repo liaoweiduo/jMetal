@@ -113,7 +113,7 @@ public class FeatureSelectionReImplementation {
                 new SBXCrossover(1.0, 20.0),
                 new PolynomialMutation(1.0 / problemList.get(i).getProblem().getNumberOfVariables(),
                         20.0),
-                problemList.get(i).getProblem().getNumberOfVariables())
+                Math.min(problemList.get(i).getProblem().getNumberOfVariables(),200))
                 .setMaxEvaluations(problemList.get(i).getProblem().getNumberOfVariables() * 200)
                 .build();
         algorithms.add(new ExperimentAlgorithm<>(algorithm, problemList.get(i), run));
@@ -126,7 +126,7 @@ public class FeatureSelectionReImplementation {
                 new PolynomialMutation(1.0 / problemList.get(i).getProblem().getNumberOfVariables(),
                         20.0))
                 .setMaxIterations(200)
-                .setPopulationSize(problemList.get(i).getProblem().getNumberOfVariables())
+                .setPopulationSize(Math.min(problemList.get(i).getProblem().getNumberOfVariables(),200))
                 .build();
         algorithms.add(new ExperimentAlgorithm<>(algorithm, problemList.get(i), run));
       }
@@ -146,8 +146,8 @@ public class FeatureSelectionReImplementation {
                 .setCrossover(crossover)
                 .setMutation(mutation)
                 .setMaxEvaluations(200 * problemList.get(i).getProblem().getNumberOfVariables())
-                .setPopulationSize(problemList.get(i).getProblem().getNumberOfVariables())
-                .setResultPopulationSize(problemList.get(i).getProblem().getNumberOfVariables())
+                .setPopulationSize(Math.min(problemList.get(i).getProblem().getNumberOfVariables(),200))
+                .setResultPopulationSize(Math.min(problemList.get(i).getProblem().getNumberOfVariables(),200))
                 .setNeighborhoodSelectionProbability(0.85)
                 .setMaximumNumberOfReplacedSolutions(1)
                 .setNeighborSize(Math.max(problemList.get(i).getProblem().getNumberOfVariables() / 10, 4))

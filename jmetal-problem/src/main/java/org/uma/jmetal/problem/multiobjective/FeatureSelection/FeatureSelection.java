@@ -1,6 +1,8 @@
 package org.uma.jmetal.problem.multiobjective.FeatureSelection;
 
 import net.sf.javaml.classification.KNearestNeighbors;
+import net.sf.javaml.classification.evaluation.EvaluateDataset;
+import net.sf.javaml.classification.evaluation.PerformanceMeasure;
 import net.sf.javaml.core.Dataset;
 import net.sf.javaml.core.DefaultDataset;
 import net.sf.javaml.core.DenseInstance;
@@ -61,25 +63,20 @@ public abstract class FeatureSelection extends AbstractDoubleProblem {
         double errorRate;
         if (numberOfSelectedFeatures == 0)      // if no feature is selected, the error rate is 1
             errorRate = 1;
-        else{
+        else {
             Dataset newDataTrain = getSelectedFeatureData(solution, dataTrain);
             Dataset newDataTest = getSelectedFeatureData(solution, dataTest);
 
             KNearestNeighbors knn = new KNearestNeighbors(5);
             knn.buildClassifier(newDataTrain);
 
-            int wrong = 0;
-            /* Classify all instances and check with the correct class values */
-            for (Instance inst : newDataTest) {
-                Object predictedClassValue = knn.classify(inst);
-                Object realClassValue = inst.classValue();
-                if (!predictedClassValue.equals(realClassValue))
-                    wrong++;
-            }
-            errorRate = (double) wrong / newDataTest.size();
-//            System.out.println(errorRate);
+            Map<Object, PerformanceMeasure> pm = EvaluateDataset.testDataset(knn, newDataTest);
+            double balancedAccuracy = 0;
+            for (Object o : pm.keySet())
+                balancedAccuracy += pm.get(o).getAccuracy();
+            errorRate = 1 - balancedAccuracy / pm.size();
         }
-            f[1] = errorRate;
+        f[1] = errorRate;
 
         for (int i = 0; i < numberOfObjectives; i++) {
             solution.setObjective(i, f[i]);

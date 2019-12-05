@@ -22,7 +22,7 @@ import java.util.Random;
 public class MLTest {
 
     public static void main(String[] args) throws Exception{
-        String dataName = "Isolet";
+        String dataName = "Vehicle";
         Dataset data = FileHandler.loadDataset(new File("jmetal-problem/src/main/resources/classificationData/"+ dataName + "/" +dataName + ".dat"),0,"\t");
 //        data.addAll(FileHandler.loadDataset(new File("jmetal-problem/src/main/resources/classificationData/"+ dataName + "/xab.dat"),18," "));
 //        data.addAll(FileHandler.loadDataset(new File("jmetal-problem/src/main/resources/classificationData/"+ dataName + "/xac.dat"),18," "));
@@ -58,6 +58,15 @@ public class MLTest {
         double errorRate = (double) wrong / dataTest.size();
         System.out.println(errorRate);
 
+        System.out.println("balanced error rate:");
+        Map<Object, PerformanceMeasure> pm = EvaluateDataset.testDataset(knn, dataTest);
+        double balancedAccuracy = 0;
+        for(Object o:pm.keySet()) {
+            System.out.println(o + ": " + pm.get(o).getAccuracy());
+            balancedAccuracy += pm.get(o).getAccuracy();
+        }
+        balancedAccuracy /= pm.size();
+        System.out.println("balanced accuracy:" + balancedAccuracy);
 
         // cross validation
         CrossValidation cv = new CrossValidation(knn);
