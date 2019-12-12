@@ -40,9 +40,9 @@ public abstract class AbstractAlgorithmRunner {
   }
   /**
    * Write the record population into files and prints some data on screen
-   * @param RecordPopulation
+   * @param RecordPopulation List[List[DoubleSolution]]
    */
-  public static void printRecordSolutionSet(List<List> RecordPopulation) {
+  public static void printRecordSolutionSet(List<List<DoubleSolution>> RecordPopulation) {
 
     for (int i = 0; i < RecordPopulation.size(); i++) {
       new SolutionListOutput(RecordPopulation.get(i))

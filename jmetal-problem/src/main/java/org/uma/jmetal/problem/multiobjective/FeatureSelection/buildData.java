@@ -2,6 +2,8 @@ package org.uma.jmetal.problem.multiobjective.FeatureSelection;
 
 import be.abeel.util.Pair;
 import net.sf.javaml.classification.KNearestNeighbors;
+import net.sf.javaml.classification.evaluation.EvaluateDataset;
+import net.sf.javaml.classification.evaluation.PerformanceMeasure;
 import net.sf.javaml.core.Dataset;
 import net.sf.javaml.core.DefaultDataset;
 import net.sf.javaml.core.DenseInstance;
@@ -10,6 +12,7 @@ import net.sf.javaml.sampling.Sampling;
 import net.sf.javaml.tools.data.FileHandler;
 
 import java.io.*;
+import java.util.Map;
 
 public class buildData {
 
@@ -58,6 +61,16 @@ public class buildData {
         }
         double errorRate = (double) wrong / dataTest.size();
         System.out.println("error rate:" + errorRate);
+
+        System.out.println("balanced error rate:");
+        Map<Object, PerformanceMeasure> pm = EvaluateDataset.testDataset(knn, dataTest);
+        double balancedAccuracy = 0;
+        for(Object o:pm.keySet()) {
+            System.out.println(o + ": " + pm.get(o).getAccuracy());
+            balancedAccuracy += pm.get(o).getAccuracy();
+        }
+        balancedAccuracy /= pm.size();
+        System.out.println("balanced accuracy:" + balancedAccuracy);
 
 
         // calculate accuracy of each single feature

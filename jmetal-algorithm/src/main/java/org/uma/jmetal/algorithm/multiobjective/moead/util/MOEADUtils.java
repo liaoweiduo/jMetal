@@ -73,33 +73,37 @@ public class MOEADUtils {
   }
 
   public static void randomPermutation(int[] perm, int size) {
-    JMetalRandom randomGenerator = JMetalRandom.getInstance() ;
-    int[] index = new int[size];
-    boolean[] flag = new boolean[size];
-
-    for (int n = 0; n < size; n++) {
-      index[n] = n;
-      flag[n] = true;
-    }
-
-    int num = 0;
-    while (num < size) {
-      int start = randomGenerator.nextInt(0, size - 1);
-      while (true) {
-        if (flag[start]) {
-          perm[num] = index[start];
-          flag[start] = false;
-          num++;
-          break;
-        }
-        if (start == (size - 1)) {
-          start = 0;
-        } else {
-          start++;
-        }
-      }
-    }
+	    randomPermutation(perm, size, 0);
   }
+
+    public static void randomPermutation(int[] perm, int size, int shift) {
+        JMetalRandom randomGenerator = JMetalRandom.getInstance() ;
+        int[] index = new int[size];
+        boolean[] flag = new boolean[size];
+
+        for (int n = 0; n < size; n++) {
+            index[n] = n + shift;
+            flag[n] = true;
+        }
+
+        int num = 0;
+        while (num < size) {
+            int start = randomGenerator.nextInt(0, size - 1);
+            while (true) {
+                if (flag[start]) {
+                    perm[num] = index[start];
+                    flag[start] = false;
+                    num++;
+                    break;
+                }
+                if (start == (size - 1)) {
+                    start = 0;
+                } else {
+                    start++;
+                }
+            }
+        }
+    }
 
   /**
    * This methods select a subset of evenly spread solutions from a solution list. The implementation

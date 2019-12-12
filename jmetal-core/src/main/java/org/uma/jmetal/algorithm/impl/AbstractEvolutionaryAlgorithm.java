@@ -4,6 +4,7 @@ import org.uma.jmetal.algorithm.Algorithm;
 import org.uma.jmetal.algorithm.CenterResults;
 import org.uma.jmetal.problem.Problem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,8 +15,9 @@ import java.util.List;
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 @SuppressWarnings("serial")
-public abstract class AbstractEvolutionaryAlgorithm<S, R>  implements Algorithm<R>, CenterResults {
+public abstract class AbstractEvolutionaryAlgorithm<S, R>  implements Algorithm<R>, CenterResults<List<S>> {
   protected List<S> population;
+  protected List<List<S>> recordSolutions;
   protected Problem<S> problem ;
 
   public List<S> getPopulation() {
@@ -50,7 +52,7 @@ public abstract class AbstractEvolutionaryAlgorithm<S, R>  implements Algorithm<
 
   @Override public abstract R getResult();
 
-  @Override public List<List> getRecordSolutions() {
+  @Override public List<List<S>> getRecordSolutions() {
     return recordSolutions;
   }
   @Override public void run() {
@@ -59,6 +61,7 @@ public abstract class AbstractEvolutionaryAlgorithm<S, R>  implements Algorithm<
 
     population = createInitialPopulation();
     population = evaluatePopulation(population);
+    recordSolutions = new ArrayList<>();
     initProgress();
     while (!isStoppingConditionReached()) {
       matingPopulation = selection(population);

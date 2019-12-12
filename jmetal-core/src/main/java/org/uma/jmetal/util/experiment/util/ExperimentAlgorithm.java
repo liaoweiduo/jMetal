@@ -22,6 +22,8 @@ public class ExperimentAlgorithm<S extends Solution<?>, Result extends List<S>> 
   private String referenceParetoFront;
   private int runId ;
 
+  private long computingTime;
+
   /**
    * Constructor
    */
@@ -44,6 +46,11 @@ public class ExperimentAlgorithm<S extends Solution<?>, Result extends List<S>> 
 
     this(algorithm,algorithm.getName(),problem,runId);
 
+  }
+
+  /* Getters */
+  public long getComputingTime() {
+    return computingTime;
   }
 
   public void runAlgorithm(Experiment<?, ?> experimentData) {
@@ -71,8 +78,17 @@ public class ExperimentAlgorithm<S extends Solution<?>, Result extends List<S>> 
                     ", run: " + runId +
                     ", funFile: " + funFile);
 
-
+    long initTime = System.currentTimeMillis();
     algorithm.run();
+    computingTime = System.currentTimeMillis() - initTime ;
+
+    JMetalLogger.logger.info(
+            " Finish algorithm: " + algorithmTag +
+                    ", problem: " + problemTag +
+                    ", run: " + runId +
+                    ", funFile: " + funFile +
+                    ", total execution time: " + computingTime + "ms");
+
     Result population = algorithm.getResult();
 
     new SolutionListOutput(population)

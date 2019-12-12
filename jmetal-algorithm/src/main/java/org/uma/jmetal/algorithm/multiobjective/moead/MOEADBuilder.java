@@ -15,7 +15,7 @@ import org.uma.jmetal.util.AlgorithmBuilder;
  * @version 1.0
  */
 public class MOEADBuilder implements AlgorithmBuilder<AbstractMOEAD<DoubleSolution>> {
-  public enum Variant {MOEAD, ConstraintMOEAD, MOEADDRA, MOEADSTM, MOEADD, MOEADSTAT} ;
+  public enum Variant {MOEAD, ConstraintMOEAD, MOEADDRA, MOEADSTM, MOEADD, MOEADSTAT, oipMOEADFS} ;
 
   protected Problem<DoubleSolution> problem ;
 
@@ -38,6 +38,8 @@ public class MOEADBuilder implements AlgorithmBuilder<AbstractMOEAD<DoubleSoluti
   protected int maxEvaluations;
 
   protected int numberOfThreads ;
+  protected int overlappingSize ;
+  protected int migrationRatio ;
 
   protected Variant moeadVariant ;
 
@@ -55,6 +57,8 @@ public class MOEADBuilder implements AlgorithmBuilder<AbstractMOEAD<DoubleSoluti
     dataDirectory = "" ;
     neighborSize = 20 ;
     numberOfThreads = 1 ;
+    overlappingSize = neighborSize / 2;
+    migrationRatio = 10;
     moeadVariant = variant ;
   }
 
@@ -101,6 +105,14 @@ public class MOEADBuilder implements AlgorithmBuilder<AbstractMOEAD<DoubleSoluti
 
   public int getNumberOfThreads() {
     return numberOfThreads ;
+  }
+
+  public int getOverlappingSize() {
+    return overlappingSize;
+  }
+
+  public int getMigrationRatio() {
+    return migrationRatio;
   }
 
   public MOEADBuilder setPopulationSize(int populationSize) {
@@ -169,6 +181,20 @@ public class MOEADBuilder implements AlgorithmBuilder<AbstractMOEAD<DoubleSoluti
     return this ;
   }
 
+
+  public MOEADBuilder setOverlappingSize(int overlappingSize) {
+    this.overlappingSize = overlappingSize;
+
+    return this ;
+  }
+
+  public MOEADBuilder setMigrationRatio(int migrationRatio) {
+    this.migrationRatio = migrationRatio;
+
+    return this ;
+  }
+
+
   public AbstractMOEAD<DoubleSolution> build() {
     AbstractMOEAD<DoubleSolution> algorithm = null ;
     if (moeadVariant.equals(Variant.MOEAD)) {
@@ -195,6 +221,10 @@ public class MOEADBuilder implements AlgorithmBuilder<AbstractMOEAD<DoubleSoluti
       algorithm = new MOEADSTAT(problem, populationSize, resultPopulationSize, maxEvaluations, crossover, mutation,
               functionType, dataDirectory, neighborhoodSelectionProbability,
               maximumNumberOfReplacedSolutions, neighborSize);
+    } else if (moeadVariant.equals(Variant.oipMOEADFS)) {
+      algorithm = new oipMOEADFS(problem,populationSize,resultPopulationSize,maxEvaluations,crossover, mutation,
+              neighborhoodSelectionProbability, maximumNumberOfReplacedSolutions, neighborSize, numberOfThreads,
+              overlappingSize, migrationRatio);
     }
     return algorithm ;
   }

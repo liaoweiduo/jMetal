@@ -27,7 +27,7 @@ import java.util.StringTokenizer;
  * @version 1.0
  */
 @SuppressWarnings("serial")
-public abstract class AbstractMOEAD<S extends Solution<?>> implements Algorithm<List<S>>, CenterResults {
+public abstract class AbstractMOEAD<S extends Solution<?>> implements Algorithm<List<S>>, CenterResults<List<S>> {
 
   protected enum NeighborType {NEIGHBOR, POPULATION}
   public enum FunctionType {TCHE, PBI, AGG}
@@ -56,12 +56,14 @@ public abstract class AbstractMOEAD<S extends Solution<?>> implements Algorithm<
   protected List<S> population;
   protected List<S> offspringPopulation;
   protected List<S> jointPopulation;
+  protected List<List<S>> recordSolutions;
   
   protected int populationSize;
   protected int resultPopulationSize ;
 
   protected int evaluations;
   protected int maxEvaluations;
+  protected int iterations;
 
   protected JMetalRandom randomGenerator ;
 
@@ -92,6 +94,7 @@ public abstract class AbstractMOEAD<S extends Solution<?>> implements Algorithm<
     idealPoint = new IdealPoint(problem.getNumberOfObjectives());
     nadirPoint = new NadirPoint(problem.getNumberOfObjectives());
     lambda = new double[populationSize][problem.getNumberOfObjectives()];
+    recordSolutions = new ArrayList<>();
   }
 
   /**
@@ -325,7 +328,7 @@ public abstract class AbstractMOEAD<S extends Solution<?>> implements Algorithm<
 
   @Override
   public List<S> getResult() {
-    if (populationSize > resultPopulationSize) {
+    if (population.size() > resultPopulationSize) {
       return MOEADUtils.getSubsetOfEvenlyDistributedSolutions(population, resultPopulationSize) ;
     } else {
       return population;
@@ -333,7 +336,7 @@ public abstract class AbstractMOEAD<S extends Solution<?>> implements Algorithm<
   }
 
   @Override
-  public List<List> getRecordSolutions() {
+  public List<List<S>> getRecordSolutions() {
     return recordSolutions;
   }
 }

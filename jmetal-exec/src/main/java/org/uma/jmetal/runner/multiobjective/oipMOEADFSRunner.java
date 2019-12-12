@@ -1,16 +1,12 @@
 package org.uma.jmetal.runner.multiobjective;
 
-import org.uma.jmetal.algorithm.Algorithm;
 import org.uma.jmetal.algorithm.multiobjective.moead.AbstractMOEAD;
 import org.uma.jmetal.algorithm.multiobjective.moead.MOEADBuilder;
-import org.uma.jmetal.algorithm.multiobjective.moead.MOEADSTAT;
 import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.impl.crossover.DifferentialEvolutionCrossover;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.problem.DoubleProblem;
-import org.uma.jmetal.problem.multiobjective.FeatureSelection.Vehicle;
 import org.uma.jmetal.solution.DoubleSolution;
-import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.AbstractAlgorithmRunner;
 import org.uma.jmetal.util.AlgorithmRunner;
 import org.uma.jmetal.util.JMetalLogger;
@@ -24,7 +20,7 @@ import java.util.List;
  *
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
-public class MOEADSTATRunner extends AbstractAlgorithmRunner {
+public class oipMOEADFSRunner extends AbstractAlgorithmRunner {
     /**
      * @param args Command line arguments.
      * @throws SecurityException
@@ -59,7 +55,7 @@ public class MOEADSTATRunner extends AbstractAlgorithmRunner {
         double mutationDistributionIndex = 20.0;
         mutation = new PolynomialMutation(mutationProbability, mutationDistributionIndex);
 
-        algorithm = new MOEADBuilder(problem, MOEADBuilder.Variant.MOEADSTAT)
+        algorithm = new MOEADBuilder(problem, MOEADBuilder.Variant.oipMOEADFS)
                 .setCrossover(crossover)
                 .setMutation(mutation)
                 .setMaxEvaluations(200)
@@ -68,6 +64,9 @@ public class MOEADSTATRunner extends AbstractAlgorithmRunner {
                 .setNeighborhoodSelectionProbability(0.85)
                 .setMaximumNumberOfReplacedSolutions(1)
                 .setNeighborSize(Math.max(problem.getNumberOfVariables() / 10, 4))
+                .setNumberOfThreads(2) // number of core
+                .setOverlappingSize(Math.max(problem.getNumberOfVariables() / 10, 4) / 2)
+                .setMigrationRatio(10)
                 .build() ;
 
         AlgorithmRunner algorithmRunner = new AlgorithmRunner.Executor(algorithm)
