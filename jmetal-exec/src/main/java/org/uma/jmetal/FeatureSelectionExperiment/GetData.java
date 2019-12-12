@@ -54,7 +54,7 @@ import java.util.List;
 
 public class GetData {
 
-  private static final int INDEPENDENT_RUNS = 1;
+  private static int INDEPENDENT_RUNS;
   private static final String CLASS_NAME = new Object() {
     public String getClassName() {
       String clazzName = this.getClass().getName();
@@ -64,13 +64,11 @@ public class GetData {
     }
   }.getClassName();
 
-  private static int RUN;
-
   public static void main(String[] args) throws IOException {
     if (args.length != 1){
-      throw new JMetalException("Missing argument: run index");
+      throw new JMetalException("Missing argument: INDEPENDENT_RUNS");
     }
-    RUN = Integer.parseInt(args[0]);
+    INDEPENDENT_RUNS = Integer.parseInt(args[0]);
 
     String experimentBaseDirectory = "Experiments";
 
@@ -114,17 +112,20 @@ public class GetData {
   private static List<ExperimentAlgorithm<DoubleSolution, List<DoubleSolution>>> configureAlgorithmList(
           List<ExperimentProblem<DoubleSolution>> problemList) {
     List<ExperimentAlgorithm<DoubleSolution, List<DoubleSolution>>> algorithms = new ArrayList<>();
-    for (int i = 0; i < problemList.size(); i++) {
-      Algorithm<List<DoubleSolution>> algorithm = new NSGAIIBuilder<DoubleSolution>(
-              problemList.get(i).getProblem(),
-              new SBXCrossover(1.0, 20.0),
-              new PolynomialMutation(1.0 / problemList.get(i).getProblem().getNumberOfVariables(),
-                      20.0),
-              Math.min(problemList.get(i).getProblem().getNumberOfVariables(),200))
-              .setMaxEvaluations(problemList.get(i).getProblem().getNumberOfVariables() * 200)
-              .build();
-      algorithms.add(new ExperimentAlgorithm<>(algorithm, problemList.get(i), RUN));
-    }
+
+      for (int run = 0; run < INDEPENDENT_RUNS; run++) {
+          for (int i = 0; i < problemList.size(); i++) {
+              Algorithm<List<DoubleSolution>> algorithm = new NSGAIIBuilder<DoubleSolution>(
+                      problemList.get(i).getProblem(),
+                      new SBXCrossover(1.0, 20.0),
+                      new PolynomialMutation(1.0 / problemList.get(i).getProblem().getNumberOfVariables(),
+                              20.0),
+                      Math.min(problemList.get(i).getProblem().getNumberOfVariables(), 200))
+                      .setMaxEvaluations(problemList.get(i).getProblem().getNumberOfVariables() * 200)
+                      .build();
+              algorithms.add(new ExperimentAlgorithm<>(algorithm, problemList.get(i), run));
+          }
+      }
 //
 //    for (int i = 0; i < problemList.size(); i++) {
 //      Algorithm<List<DoubleSolution>> algorithm = new SPEA2Builder<DoubleSolution>(
