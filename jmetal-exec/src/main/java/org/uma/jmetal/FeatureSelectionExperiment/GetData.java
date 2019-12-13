@@ -54,7 +54,8 @@ import java.util.List;
 
 public class GetData {
 
-  private static int INDEPENDENT_RUNS;
+  private static int RUN_FROM;
+  private static int RUN_TO;
   private static int NUM_SUBPOPULATION = 2;
   private static final String CLASS_NAME = new Object() {
     public String getClassName() {
@@ -69,10 +70,11 @@ public class GetData {
     if (args.length == 0){
       throw new JMetalException("Missing argument: INDEPENDENT_RUNS");
     }
-    INDEPENDENT_RUNS = Integer.parseInt(args[0]);
+    RUN_FROM = Integer.parseInt(args[0]);
+    RUN_TO = Integer.parseInt(args[1]);
 
-    if (args.length == 2){
-        NUM_SUBPOPULATION = Integer.parseInt(args[1]);
+    if (args.length == 3){
+        NUM_SUBPOPULATION = Integer.parseInt(args[2]);
     }
 
     String experimentBaseDirectory = "Experiments";
@@ -98,7 +100,7 @@ public class GetData {
                             new PISAHypervolume<DoubleSolution>(),
                             new InvertedGenerationalDistance<DoubleSolution>(),
                             new InvertedGenerationalDistancePlus<DoubleSolution>()))
-                    .setIndependentRuns(INDEPENDENT_RUNS)
+                    .setIndependentRuns(RUN_TO-RUN_FROM+1)
                     .setNumberOfCores(32)
                     .build();
 
@@ -118,7 +120,7 @@ public class GetData {
           List<ExperimentProblem<DoubleSolution>> problemList) {
     List<ExperimentAlgorithm<DoubleSolution, List<DoubleSolution>>> algorithms = new ArrayList<>();
 
-    for (int run = 0; run < INDEPENDENT_RUNS; run++) {
+    for (int run = RUN_FROM; run <= RUN_TO; run++) {
 //        for (int i = 0; i < problemList.size(); i++) {
 //          Algorithm<List<DoubleSolution>> algorithm = new NSGAIIBuilder<DoubleSolution>(
 //                  problemList.get(i).getProblem(),
