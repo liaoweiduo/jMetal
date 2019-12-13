@@ -55,17 +55,19 @@ public class oipMOEADFSRunner extends AbstractAlgorithmRunner {
         double mutationDistributionIndex = 20.0;
         mutation = new PolynomialMutation(mutationProbability, mutationDistributionIndex);
 
+        int populationSize = Math.min(problem.getNumberOfVariables(),200);
+
         algorithm = new MOEADBuilder(problem, MOEADBuilder.Variant.oipMOEADFS)
                 .setCrossover(crossover)
                 .setMutation(mutation)
                 .setMaxEvaluations(200)
-                .setPopulationSize(Math.min(problem.getNumberOfVariables(),200))
-                .setResultPopulationSize(Math.min(problem.getNumberOfVariables(),200))
+                .setPopulationSize(populationSize)
+                .setResultPopulationSize(populationSize)
                 .setNeighborhoodSelectionProbability(0.85)
                 .setMaximumNumberOfReplacedSolutions(1)
-                .setNeighborSize(Math.max(problem.getNumberOfVariables() / 10, 4))
+                .setNeighborSize(Math.max(populationSize / 10, 4))
                 .setNumberOfThreads(2) // number of core
-                .setOverlappingSize(Math.max(problem.getNumberOfVariables() / 10, 4) / 2)
+                .setOverlappingSize(Math.max(populationSize / 10, 4) / 2)
                 .setMigrationRatio(10)
                 .build() ;
 

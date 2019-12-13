@@ -374,7 +374,7 @@ public class oipMOEADFS extends AbstractMOEAD<DoubleSolution> {
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
-		return "oipMOEAD-FS";
+		return "oipMOEAD-FS-" + subPopulationNum;
 	}
 	@Override
 	public String getDescription() {
