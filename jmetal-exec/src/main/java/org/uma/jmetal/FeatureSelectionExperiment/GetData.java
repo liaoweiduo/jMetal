@@ -55,6 +55,7 @@ import java.util.List;
 public class GetData {
 
   private static int INDEPENDENT_RUNS;
+  private static int NUM_SUBPOPULATION = 2;
   private static final String CLASS_NAME = new Object() {
     public String getClassName() {
       String clazzName = this.getClass().getName();
@@ -65,10 +66,14 @@ public class GetData {
   }.getClassName();
 
   public static void main(String[] args) throws IOException {
-    if (args.length != 1){
+    if (args.length == 0){
       throw new JMetalException("Missing argument: INDEPENDENT_RUNS");
     }
     INDEPENDENT_RUNS = Integer.parseInt(args[0]);
+
+    if (args.length == 2){
+        NUM_SUBPOPULATION = Integer.parseInt(args[1]);
+    }
 
     String experimentBaseDirectory = "Experiments";
 
@@ -211,7 +216,7 @@ public class GetData {
                     .setNeighborhoodSelectionProbability(0.85)
                     .setMaximumNumberOfReplacedSolutions(1)
                     .setNeighborSize(Math.max(populationSize / 10, 4))
-                    .setNumberOfThreads(2) // number of core
+                    .setNumberOfThreads(NUM_SUBPOPULATION) // number of core
                     .setOverlappingSize(Math.max(populationSize / 10, 4) / 2)
                     .setMigrationRatio(10)
                     .build() ;
