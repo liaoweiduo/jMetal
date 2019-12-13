@@ -113,8 +113,7 @@ public class GetData {
           List<ExperimentProblem<DoubleSolution>> problemList) {
     List<ExperimentAlgorithm<DoubleSolution, List<DoubleSolution>>> algorithms = new ArrayList<>();
 
-    for (int run = 0; run < 1; run++) {
-        run = INDEPENDENT_RUNS;
+    for (int run = 0; run < INDEPENDENT_RUNS; run++) {
 //        for (int i = 0; i < problemList.size(); i++) {
 //          Algorithm<List<DoubleSolution>> algorithm = new NSGAIIBuilder<DoubleSolution>(
 //                  problemList.get(i).getProblem(),
