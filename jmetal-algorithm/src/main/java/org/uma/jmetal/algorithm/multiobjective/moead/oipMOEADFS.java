@@ -46,7 +46,6 @@ public class oipMOEADFS extends AbstractMOEAD<DoubleSolution> {
 
 		differentialEvolutionCrossover = (DifferentialEvolutionCrossover)crossoverOperator ;
 		this.subPopulationNum = subPopulationNum;
-		checkNumberOfThreads(population, subPopulationNum);
 		this.executorService = Executors.newFixedThreadPool(subPopulationNum);
 		this.subPopulationSize = populationSize / subPopulationNum;
 		this.overlappingSize = overlappingSize; // neighborSize / 2;
@@ -54,8 +53,11 @@ public class oipMOEADFS extends AbstractMOEAD<DoubleSolution> {
 		this.migrationRatio = migrationRatio;
 
 		for (int subPopulationIndex = 0; subPopulationIndex < subPopulationNum; subPopulationIndex ++){
-			int totalSubPopulationSize = subPopulationSize +
-					((subPopulationIndex == subPopulationNum - 1 || subPopulationIndex == 0)?1:2) * overlappingSize;
+			int totalSubPopulationSize = subPopulationSize;
+			if (subPopulationIndex != 0)
+			    totalSubPopulationSize += overlappingSize;
+			if (subPopulationIndex != subPopulationNum - 1)
+			    totalSubPopulationSize += overlappingSize;
 			SubProcess subProcess = new SubProcess(problem, totalSubPopulationSize, subPopulationSize, overlappingSize,
 					subPopulationSize, maxEvaluations, crossoverOperator, mutationOperator, functionType, dataDirectory,
 					neighborhoodSelectionProbability, maximumNumberOfReplacedSolutions, neighborSize, subPopulationNum,
@@ -383,14 +385,6 @@ public class oipMOEADFS extends AbstractMOEAD<DoubleSolution> {
 	}
 
 	// for parallelism
-	private void checkNumberOfThreads(List<DoubleSolution> population, int numberOfThreadsForSubPopulation) {
-		if ((population.size() % numberOfThreadsForSubPopulation) != 0) {
-			throw new JMetalException("Wrong number of threads: the remainder if the " +
-					"population size (" + population.size() + ") is not divisible by " +
-					numberOfThreadsForSubPopulation) ;
-		}
-	}
-
 	private class Messages {
 		Queue<DoubleSolution>[] subPopulation;
 

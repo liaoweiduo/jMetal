@@ -51,6 +51,9 @@ public class GenerateReferenceFrontFromFile {
       throw new JMetalException("Error opening file/directory") ;
     }
 
+    // remove VAR*.tsv
+    fileNameList.removeIf(fileName -> fileName.contains("VAR"));
+
     int numberOfObjectives = determineNumberOfObjectives(fileNameList.get(0));
     for (String fileName: fileNameList) {
       System.out.println(fileName) ;
