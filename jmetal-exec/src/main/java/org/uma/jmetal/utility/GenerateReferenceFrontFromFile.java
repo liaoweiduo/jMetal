@@ -24,16 +24,21 @@ import static java.util.stream.Collectors.toList;
  * 1. the name of the file or directory containing the data
  * 2. the output file name which will contain the generated front
  *
+ *
+ * Reference input:
+ * 1) Experiments/GetData/data/oipMOEAD-FS-1/Vehicle Experiments/GetData/data/oipMOEAD-FS-1/FUN_Vehicle.tsv Vehicle
+ * 2) Experiments/GetData/data jmetal-core/src/test/resources/pareto_fronts/Vehicle.pf Vehicle
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class GenerateReferenceFrontFromFile {
   public static void main(String[] args) throws IOException {
-    if (args.length != 2) {
-      throw new JMetalException("Wrong number of arguments: two file names are required.");
+    if (args.length != 3) {
+      throw new JMetalException("Wrong number of arguments: two file names and problem name are required.");
     }
 
     String inputFileName = args[0] ;
     String outputFileName = args[1] ;
+    String problemName = args[2];
 
     NonDominatedSolutionListArchive<Solution<?>> archive = new NonDominatedSolutionListArchive<>();
     List<String> fileNameList = new ArrayList<>();
@@ -42,11 +47,20 @@ public class GenerateReferenceFrontFromFile {
       fileNameList.add(inputFileName);
 
     } else if (Files.isDirectory(Paths.get(inputFileName))) {
-
-      fileNameList.addAll(Files
-        .list(Paths.get(inputFileName))
-        .map(s -> s.toString())
-        .collect(toList()));
+      List<String> algorithmDirList = Files
+              .list(Paths.get(inputFileName))
+              .map(s -> s.toString())
+              .collect(toList());
+      for (String algorithmDir : algorithmDirList ){
+        if (Files.isDirectory(Paths.get(algorithmDir))){  // algorithm dir
+          fileNameList.addAll(Files
+                  .list(Paths.get(algorithmDir + '/' + problemName))
+                  .map(s -> s.toString())
+                  .collect(toList()));
+        } else {  // file
+          fileNameList.add(algorithmDir);
+        }
+      }
     } else {
       throw new JMetalException("Error opening file/directory") ;
     }

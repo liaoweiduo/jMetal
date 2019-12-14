@@ -25,7 +25,7 @@ public class oipMOEADFS extends AbstractMOEAD<DoubleSolution> {
 	private ExecutorService executorService;
 	private volatile Messages message;
 
-	private List<AbstractMOEAD<DoubleSolution>> algorithmList = new ArrayList<>();
+	private List<SubProcess> algorithmList = new ArrayList<>();
 
 	public oipMOEADFS(Problem<DoubleSolution> problem,
                       int populationSize,		// total populationSize
@@ -99,7 +99,7 @@ public class oipMOEADFS extends AbstractMOEAD<DoubleSolution> {
 		}
 	}
 
-	private class SubProcess extends AbstractMOEAD<DoubleSolution>{
+	public class SubProcess extends AbstractMOEAD<DoubleSolution>{
 		private int subPopulationId;
 		private int overlappingSize;
 		private int subPopulationNum;
@@ -109,7 +109,9 @@ public class oipMOEADFS extends AbstractMOEAD<DoubleSolution> {
 		private double[] refPoints;
 		private double weight = 0.01;
 
-		private SubProcess(Problem<DoubleSolution> problem,
+		private long computingTime = 0;
+
+		public SubProcess(Problem<DoubleSolution> problem,
 						   int populationSize,
 						   int truePopulationSize,
 						   int overlappingSize,		// normally T/2
@@ -137,6 +139,7 @@ public class oipMOEADFS extends AbstractMOEAD<DoubleSolution> {
 
 		@Override
 		public void run() {
+		    computingTime = System.currentTimeMillis();
 			initializePopulation();
 			initializeUniformRef();
 			initializeNeighborhood();
@@ -195,6 +198,7 @@ public class oipMOEADFS extends AbstractMOEAD<DoubleSolution> {
 				iterations++;
 				migration(iterations);
 			} while (iterations < maxEvaluations);
+			computingTime = System.currentTimeMillis() - computingTime;
 		}
 
 		private void migration(int iterations) {
@@ -223,7 +227,7 @@ public class oipMOEADFS extends AbstractMOEAD<DoubleSolution> {
 		 * check for the same one in the population before evaluating
 		 * the duplicated one with higher reference points will be random
 		 */
-		public List<Integer> checkForDuplicate(){
+		private List<Integer> checkForDuplicate(){
 			List<Integer> duplicate = new ArrayList<Integer>();
 
 			//start from one solution
@@ -267,7 +271,7 @@ public class oipMOEADFS extends AbstractMOEAD<DoubleSolution> {
 			}
 		}
 
-		protected void initializePopulation() {
+		private void initializePopulation() {
 			for (int i = 0; i < populationSize; i++) {
 				DoubleSolution newSolution = (DoubleSolution)problem.createSolution();
 
@@ -371,9 +375,21 @@ public class oipMOEADFS extends AbstractMOEAD<DoubleSolution> {
 		public void setWeight(double weight){
 			this.weight = weight;
 		}
+
+		public long getComputingTime() {
+		    return this.computingTime;
+        }
 	}
 
-	@Override
+    public int getSubPopulationNum() {
+        return subPopulationNum;
+    }
+
+    public List<SubProcess> getAlgorithmList() {
+        return algorithmList;
+    }
+
+    @Override
 	public String getName() {
 		// TODO Auto-generated method stub
 		return "oipMOEAD-FS-" + subPopulationNum;

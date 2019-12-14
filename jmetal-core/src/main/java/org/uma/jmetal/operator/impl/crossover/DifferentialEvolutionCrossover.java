@@ -68,8 +68,7 @@ public class DifferentialEvolutionCrossover implements CrossoverOperator<DoubleS
    * @param cr
    * @param f
    * @param variant
-   * @param jRandomGenerator
-   * @param crRandomGenerator
+   * @param randomGenerator
    */
   public DifferentialEvolutionCrossover(double cr, double f, String variant, RandomGenerator<Double> randomGenerator) {
 	  this(cr, f, variant, BoundedRandomGenerator.fromDoubleToInteger(randomGenerator), BoundedRandomGenerator.bound(randomGenerator));

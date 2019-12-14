@@ -20,8 +20,11 @@ import java.util.Map;
 import java.util.Random;
 
 public class MLTest {
+    public static void main(String[] args) throws Exception {
+        ClassificationDataLoadTest();
+    }
 
-    public static void main(String[] args) throws Exception{
+    public static void ClassificationDataLoadTest() throws Exception{
         String dataName = "Vehicle";
         Dataset data = FileHandler.loadDataset(new File("jmetal-problem/src/main/resources/classificationData/"+ dataName + "/" +dataName + ".dat"),0,"\t");
 //        data.addAll(FileHandler.loadDataset(new File("jmetal-problem/src/main/resources/classificationData/"+ dataName + "/xab.dat"),18," "));
