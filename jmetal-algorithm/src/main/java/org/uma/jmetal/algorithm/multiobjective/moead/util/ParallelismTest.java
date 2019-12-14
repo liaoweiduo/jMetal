@@ -40,7 +40,7 @@ public class ParallelismTest {
         if (args.length == 1) {
             problemName += args[0];
             referenceParetoFront += args[0] + ".pf";
-            timeDataOutputFileName += problemName + ".dat";
+            timeDataOutputFileName += args[0] + ".dat";
         } else {
             problemName += "Vehicle";
             referenceParetoFront += "Vehicle.pf";
