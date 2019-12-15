@@ -15,8 +15,11 @@ import java.io.*;
 import java.util.Map;
 
 public class buildData {
+    public static void main(String[] args) throws IOException{
+        buildFromRaw(args);
+    }
 
-    public static void main(String[] args) throws IOException {
+    public static void buildFromRaw(String[] args) throws IOException {
         String basePath = "jmetal-problem/src/main/resources/classificationData/";
         int featuresNumber = 617;
         int instanceNumber = 7797;
