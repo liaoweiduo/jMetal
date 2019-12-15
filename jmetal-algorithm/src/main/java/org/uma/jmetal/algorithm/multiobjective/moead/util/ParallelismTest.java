@@ -65,7 +65,7 @@ public class ParallelismTest {
         for (int featureNum = 0; featureNum < problem.getNumberOfVariables(); featureNum++){
             long[] computationTimes = computationTimeList[featureNum];
             long totalTime = 0;
-            long averageTime = 0;
+            double averageTime = 0;
             long maxTime = Long.MIN_VALUE;
             long minTime = Long.MAX_VALUE;
             for (long computationTime : computationTimes){
@@ -73,7 +73,7 @@ public class ParallelismTest {
                 maxTime = (maxTime < computationTime)?computationTime:maxTime;
                 minTime = (minTime > computationTime)?computationTime:minTime;
             }
-            averageTime = totalTime / 100;
+            averageTime = totalTime / 100.0;
             outputStr += "\n" + averageTime + ", " + maxTime + ", " + minTime +";";
         }
         JMetalLogger.logger.info(problemName + " ClassificationMethodTimeCostTestForDifferentFeatureNumber:" +
