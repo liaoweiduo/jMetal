@@ -60,10 +60,29 @@ public class ParallelismTest {
                 computationTimeList[featureNum-1][solutionIndex++] = computationTime;
             }
         }
-        DefaultFileOutputContext context = new DefaultFileOutputContext(timeDataOutputFileName);
-        BufferedWriter bufferedWriter = context.getFileWriter();
-        bufferedWriter.write(computationTimeList.toString());
-        bufferedWriter.close();
+
+        String outputStr = "";
+        for (int featureNum = 1; featureNum <= problem.getNumberOfVariables(); featureNum++){
+            long[] computationTimes = computationTimeList[featureNum];
+            long totalTime = 0;
+            long averageTime = 0;
+            long maxTime = Long.MIN_VALUE;
+            long minTime = Long.MAX_VALUE;
+            for (long computationTime : computationTimes){
+                totalTime += computationTime;
+                maxTime = (maxTime < computationTime)?computationTime:maxTime;
+                minTime = (minTime > computationTime)?computationTime:minTime;
+            }
+            averageTime = totalTime / 100;
+            outputStr += "\n" + averageTime + ", " + maxTime + ", " + minTime +";";
+        }
+        JMetalLogger.logger.info(problemName + " ClassificationMethodTimeCostTestForDifferentFeatureNumber:" +
+                outputStr);
+//        DefaultFileOutputContext context = new DefaultFileOutputContext(timeDataOutputFileName);
+//        BufferedWriter bufferedWriter = context.getFileWriter();
+//        for ()
+//        bufferedWriter.write(computationTimeList);
+//        bufferedWriter.close();
     }
 
     public static void parallelismTest() {
