@@ -62,7 +62,7 @@ public class ParallelismTest {
         }
 
         String outputStr = "";
-        for (int featureNum = 1; featureNum <= problem.getNumberOfVariables(); featureNum++){
+        for (int featureNum = 0; featureNum < problem.getNumberOfVariables(); featureNum++){
             long[] computationTimes = computationTimeList[featureNum];
             long totalTime = 0;
             long averageTime = 0;
