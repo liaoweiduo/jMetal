@@ -30,6 +30,7 @@ public class oipMOEADFSRunner extends AbstractAlgorithmRunner {
     java org.uma.jmetal.runner.multiobjective.MOEADRunner problemName [referenceFront]
      */
     public static void main(String[] args) throws FileNotFoundException {
+        int NUM_OF_CORE;
         DoubleProblem problem;
         oipMOEADFS algorithm;
         MutationOperator<DoubleSolution> mutation;
@@ -38,13 +39,21 @@ public class oipMOEADFSRunner extends AbstractAlgorithmRunner {
         String problemName = "org.uma.jmetal.problem.multiobjective.FeatureSelection.";
         String referenceParetoFront = "jmetal-core/src/main/resources/pareto_fronts/";
         if (args.length == 1) {
-            problemName += args[0];
+            problemName += args[0] ;
+            referenceParetoFront += args[0] + ".pf" ;
+            NUM_OF_CORE = 2 ;
         } else if (args.length == 2) {
             problemName += args[0] ;
             referenceParetoFront += args[1] ;
+            NUM_OF_CORE = 2 ;
+        } else if (args.length == 3) {
+            problemName += args[0] ;
+            referenceParetoFront += args[1] ;
+            NUM_OF_CORE = Integer.parseInt(args[2]) ;
         } else {
-            problemName += "Vehicle";
-            referenceParetoFront += "Vehicle.pf";
+            problemName += "Vehicle" ;
+            referenceParetoFront += "Vehicle.pf" ;
+            NUM_OF_CORE = 2 ;
         }
 
         problem = (DoubleProblem) ProblemUtils.<DoubleSolution> loadProblem(problemName);
@@ -68,7 +77,7 @@ public class oipMOEADFSRunner extends AbstractAlgorithmRunner {
                 .setNeighborhoodSelectionProbability(0.85)
                 .setMaximumNumberOfReplacedSolutions(1)
                 .setNeighborSize(Math.max(populationSize / 10, 4))
-                .setNumberOfThreads(4) // number of core
+                .setNumberOfThreads(NUM_OF_CORE) // number of core
                 .setOverlappingSize(Math.max(populationSize / 10, 4) / 2)
                 .setMigrationRatio(10)
                 .build() ;
@@ -91,12 +100,12 @@ public class oipMOEADFSRunner extends AbstractAlgorithmRunner {
         JMetalLogger.logger.info("Sub progress execution time: " + subPopulationTimeList);
 
         List<DoubleSolution> population = algorithm.getResult() ;
-        List<List<DoubleSolution>> populationList = algorithm.getRecordSolutions();
+        List<List<DoubleSolution>> populationList = algorithm.getRecordSolutions() ;
 
         printRecordSolutionSet(populationList);
         printFinalSolutionSet(population);
-        if (!referenceParetoFront.equals("")) {
-            printQualityIndicators(population, referenceParetoFront) ;
-        }
+//        if (!referenceParetoFront.equals("")) {
+//            printQualityIndicators(population, referenceParetoFront) ;
+//        }
     }
 }
