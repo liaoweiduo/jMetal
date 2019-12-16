@@ -1,5 +1,7 @@
 package org.uma.jmetal.algorithm.multiobjective.moead;
 
+import net.sf.javaml.core.Dataset;
+import net.sf.javaml.tools.data.FileHandler;
 import org.uma.jmetal.algorithm.multiobjective.moead.util.MOEADUtils;
 import org.uma.jmetal.operator.CrossoverOperator;
 import org.uma.jmetal.operator.MutationOperator;
@@ -9,36 +11,45 @@ import org.uma.jmetal.problem.multiobjective.FeatureSelection.FeatureSelection;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.JMetalException;
 
-import java.util.*;
+import javax.management.JMException;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class oipMOEADFS extends AbstractMOEAD<DoubleSolution> {
+
+public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 
 	private DifferentialEvolutionCrossover differentialEvolutionCrossover ;
 	private int migrationRatio;
 
 	// for parallelism
 	private int subPopulationNum = 2;
-	private int subPopulationSize;
+	private int[] populationAssign;
 	private int overlappingSize;
 	private ExecutorService executorService;
 	private volatile Messages message;
 
 	private List<SubProcess> algorithmList = new ArrayList<>();
 
-	public oipMOEADFS(Problem<DoubleSolution> problem,
-                      int populationSize,		// total populationSize
-                      int resultPopulationSize,
-                      int maxIteration,
-                      CrossoverOperator<DoubleSolution> crossoverOperator,
-                      MutationOperator<DoubleSolution> mutation,
-                      double neighborhoodSelectionProbability,
-                      int maximumNumberOfReplacedSolutions,
-                      int neighborSize,			// T = populationSize / 10 or 4
-					  int subPopulationNum,		// core number
-					  int overlappingSize,		// normally T/2
-					  int migrationRatio		// iterations % migrationRatio == 0
+	public aspMOEADFS(Problem<DoubleSolution> problem,
+					  int populationSize,        // total populationSize
+					  int resultPopulationSize,
+					  int maxIteration,
+					  CrossoverOperator<DoubleSolution> crossoverOperator,
+					  MutationOperator<DoubleSolution> mutation,
+					  double neighborhoodSelectionProbability,
+					  int maximumNumberOfReplacedSolutions,
+					  int neighborSize,            // T = populationSize / 10 or 4
+					  int subPopulationNum,        // core number
+					  int overlappingSize,        // normally T/2
+					  int migrationRatio        // iterations % migrationRatio == 0
 	) {
 		super(problem, populationSize, resultPopulationSize, maxIteration, crossoverOperator, mutation,
 				FunctionType.TCHE, "", neighborhoodSelectionProbability,
@@ -47,21 +58,77 @@ public class oipMOEADFS extends AbstractMOEAD<DoubleSolution> {
 		differentialEvolutionCrossover = (DifferentialEvolutionCrossover)crossoverOperator ;
 		this.subPopulationNum = subPopulationNum;
 		this.executorService = Executors.newFixedThreadPool(subPopulationNum);
-		this.subPopulationSize = populationSize / subPopulationNum;
-		this.overlappingSize = overlappingSize; // neighborSize / 2;
+		this.populationAssign = new int[populationSize];
+
+		String basePath = "jmetal-problem/src/main/resources/computationCostsForAspMOEADFS/";
+		double[] computationTimeCosts;
+		computationTimeCosts = new double[problem.getNumberOfVariables()];
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(basePath + problem.getName() + ".dat"));
+			String record = br.readLine();
+			String[] splitedRecord = record.split(",");
+			for (int index = 0; index < problem.getNumberOfVariables(); index++) {
+				computationTimeCosts[index] = Double.parseDouble(splitedRecord[index]);
+			}
+		} catch (Exception e){
+			throw new JMetalException("Can not find evaluation cost data for problem:" + problem.getName() + "and", e) ;
+		}
+		double sumComputationTime = 0;
+		for (int featureNumIndex = 0; featureNumIndex < problem.getNumberOfVariables(); featureNumIndex++){
+			sumComputationTime += computationTimeCosts[featureNumIndex];
+		}
+		double computationTimePerIsland = sumComputationTime / subPopulationNum;
+		double currentComputationTime = 0;
+		int[] featureNumAssign = new int[subPopulationNum]; int islandIndex = 0; int islandSize = 0;
+		int featureNumIndex;
+		for (featureNumIndex = 0; featureNumIndex < problem.getNumberOfVariables(); featureNumIndex++){
+			if (islandIndex == subPopulationNum - 1)
+				break;
+			if (currentComputationTime + computationTimeCosts[featureNumIndex] > computationTimePerIsland){
+				featureNumAssign[islandIndex++] = islandSize;
+				currentComputationTime = computationTimeCosts[featureNumIndex];
+				islandSize = 1;
+			} else {
+				currentComputationTime += computationTimeCosts[featureNumIndex];
+				islandSize ++;
+			}
+		}
+		featureNumAssign[islandIndex] = problem.getNumberOfVariables() - featureNumIndex + 1;
+		int sum = 0;
+		for (int featureNumAssignIndex = 0; featureNumAssignIndex < subPopulationNum - 1; featureNumAssignIndex++){
+			featureNumAssign[featureNumAssignIndex] = featureNumAssign[featureNumAssignIndex]
+					* populationSize / problem.getNumberOfVariables() ;
+			sum += featureNumAssign[featureNumAssignIndex];
+		}
+		featureNumAssign[subPopulationNum - 1] = populationSize - sum;
+		sum = featureNumAssign[0]; int assignedIslandIndex = 0;
+		for (int individualIndex = 0; individualIndex < populationSize; individualIndex ++){
+			if (individualIndex == sum){
+				assignedIslandIndex ++;
+				sum += featureNumAssign[assignedIslandIndex];
+			}
+			this.populationAssign[individualIndex] = assignedIslandIndex;
+		}
+
+		this.overlappingSize = overlappingSize;
 		this.message = new Messages(subPopulationNum);
 		this.migrationRatio = migrationRatio;
 
 		for (int subPopulationIndex = 0; subPopulationIndex < subPopulationNum; subPopulationIndex ++){
-			int totalSubPopulationSize = subPopulationSize;
+
+			int truePopulationSize = 0;
+			for (int individualIndex = 0; individualIndex < populationSize; individualIndex++)
+				if (this.populationAssign[individualIndex] == subPopulationIndex)
+					truePopulationSize ++ ;
+			int totalSubPopulationSize = truePopulationSize;
 			if (subPopulationIndex != 0)
 			    totalSubPopulationSize += overlappingSize;
 			if (subPopulationIndex != subPopulationNum - 1)
 			    totalSubPopulationSize += overlappingSize;
-			SubProcess subProcess = new SubProcess(problem, totalSubPopulationSize, subPopulationSize, overlappingSize,
-					subPopulationSize, maxEvaluations, crossoverOperator, mutationOperator, functionType, dataDirectory,
-					neighborhoodSelectionProbability, maximumNumberOfReplacedSolutions, neighborSize, subPopulationNum,
-					subPopulationIndex);
+			SubProcess subProcess = new SubProcess(problem, totalSubPopulationSize, truePopulationSize,
+					populationAssign, overlappingSize, truePopulationSize, maxEvaluations, crossoverOperator,
+					mutationOperator, functionType, dataDirectory, neighborhoodSelectionProbability,
+					maximumNumberOfReplacedSolutions, neighborSize, subPopulationNum, subPopulationIndex);
 			algorithmList.add(subProcess);
 		}
 	}
@@ -69,7 +136,7 @@ public class oipMOEADFS extends AbstractMOEAD<DoubleSolution> {
 	@Override
 	public void run() {
 		for (int subPopulationIndex = 0; subPopulationIndex < subPopulationNum; subPopulationIndex ++){
-			SubProcess subProcess = (SubProcess) algorithmList.get(subPopulationIndex);
+			SubProcess subProcess = algorithmList.get(subPopulationIndex);
 			executorService.submit(subProcess);
 		}
 		executorService.shutdown();
@@ -104,6 +171,7 @@ public class oipMOEADFS extends AbstractMOEAD<DoubleSolution> {
 		private int overlappingSize;
 		private int subPopulationNum;
 		private int truePopulationSize;
+		private int[] populationAssign;
 		private boolean[] changeFlag;
 
 		private double[] refPoints;
@@ -114,6 +182,7 @@ public class oipMOEADFS extends AbstractMOEAD<DoubleSolution> {
 		public SubProcess(Problem<DoubleSolution> problem,
 						   int populationSize,
 						   int truePopulationSize,
+						   int[] populationAssign,
 						   int overlappingSize,		// normally T/2
 						   int resultPopulationSize,
 						   int maxIteration,
@@ -134,6 +203,7 @@ public class oipMOEADFS extends AbstractMOEAD<DoubleSolution> {
 			this.overlappingSize = overlappingSize;
 			this.subPopulationNum = subPopulationNum;
 			this.truePopulationSize = truePopulationSize;
+			this.populationAssign = populationAssign;
 			this.changeFlag = new boolean[populationSize];
 		}
 
@@ -262,10 +332,18 @@ public class oipMOEADFS extends AbstractMOEAD<DoubleSolution> {
 
 		private void initializeUniformRef() {
 			refPoints = new double[this.populationSize];
-			double step = 1.0 / (this.truePopulationSize * this.subPopulationNum);	// total
-			double startPoint =  (double) (this.truePopulationSize * this.subPopulationId
+			int wholePopulationSize = this.populationAssign.length;
+			double step = 1.0 / wholePopulationSize;	// total
+			int start = 0;
+			for (int populationIndex = 0; populationIndex < wholePopulationSize; populationIndex ++){
+				if (this.populationAssign[populationIndex] == this.subPopulationId){
+					start = populationIndex;
+					break;
+				}
+			}
+			double startPoint =  (double) (start
 					- ((this.subPopulationId == 0)?0:1) * this.overlappingSize)
-					/ (this.truePopulationSize * this.subPopulationNum);
+					/ (wholePopulationSize);
 			for(int i=0;i<this.populationSize;i++){
 				refPoints[i] = startPoint + (i+1) * step;
 			}
@@ -369,7 +447,7 @@ public class oipMOEADFS extends AbstractMOEAD<DoubleSolution> {
 		@Override
 		public String getDescription() {
 			// TODO Auto-generated method stub
-			return "overlapping island mode parallel MOEAD with multiple reference points";
+			return "adaptive island size overlapping island mode parallel MOEAD with multiple reference points";
 		}
 
 		public void setWeight(double weight){
@@ -392,12 +470,12 @@ public class oipMOEADFS extends AbstractMOEAD<DoubleSolution> {
     @Override
 	public String getName() {
 		// TODO Auto-generated method stub
-		return "oipMOEAD-FS-" + subPopulationNum;
+		return "aspMOEAD-FS-" + subPopulationNum;
 	}
 	@Override
 	public String getDescription() {
 		// TODO Auto-generated method stub
-		return "overlapping island mode parallel MOEAD with multiple reference points";
+		return "adaptive island size overlapping island mode parallel MOEAD with multiple reference points";
 	}
 
 	// for parallelism
