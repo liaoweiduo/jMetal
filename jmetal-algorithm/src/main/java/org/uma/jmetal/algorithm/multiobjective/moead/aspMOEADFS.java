@@ -309,8 +309,8 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 						list.add((DoubleSolution) sol.copy());
 					}
 					recordSolutions.add(list);
-					JMetalLogger.logger.info("Record centre solutions in sub processor: " + subPopulationId +
-							", iterations = " + iterations);
+//					JMetalLogger.logger.info("Record centre solutions in sub processor: " + subPopulationId +
+//							", iterations = " + iterations);
 				}
 
 				for (int i = 0; i < truePopulationSize; i++) {
