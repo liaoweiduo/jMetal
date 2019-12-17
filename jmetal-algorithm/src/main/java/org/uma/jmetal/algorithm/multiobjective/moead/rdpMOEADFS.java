@@ -47,7 +47,7 @@ public class rdpMOEADFS extends aspMOEADFS {
 
 		islandId++;
 		for (int individualIndex = leftIslandSize * numOfCore + populationSize % numOfCore; individualIndex < populationSize; individualIndex ++){
-			if ((individualIndex - leftIslandSize * numOfCore + populationSize % numOfCore) % rightIslandSize == 0 ){
+			if ((individualIndex - leftIslandSize * numOfCore - populationSize % numOfCore) % rightIslandSize == 0 ){
 				islandId --;
 			}
 			this.populationAssign[individualIndex] = islandId;

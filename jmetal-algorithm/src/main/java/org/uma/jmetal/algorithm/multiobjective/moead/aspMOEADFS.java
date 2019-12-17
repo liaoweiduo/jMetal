@@ -215,15 +215,17 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 			if (subPopulationNum == 2) {
 				featureNumAssign = new int[]{11, 7};
 			} else if (subPopulationNum == 4) {
-				featureNumAssign = new int[]{6, 5, 4, 3};
+				featureNumAssign = new int[]{7, 4, 3, 4};
 			} else if (subPopulationNum == 8) {
 				featureNumAssign = new int[]{3, 3, 2, 2, 2, 2, 2, 2};
+			} else if (subPopulationNum == 16) {
+				featureNumAssign = new int[]{2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 			}
 		} else if (problem.getName().equals("Musk1")){
 			if (subPopulationNum == 2) {
 				featureNumAssign = new int[]{110,56};
 			} else if (subPopulationNum == 4) {
-				featureNumAssign = new int[]{73, 36, 29, 28};
+				featureNumAssign = new int[]{71, 36, 30, 29};
 			} else if (subPopulationNum == 8) {
 				featureNumAssign = new int[]{45,22,20,18,17,16,14,14};
 			}
@@ -307,6 +309,8 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 						list.add((DoubleSolution) sol.copy());
 					}
 					recordSolutions.add(list);
+					JMetalLogger.logger.info("Record centre solutions in sub processor: " + subPopulationId +
+							", iterations = " + iterations);
 				}
 
 				for (int i = 0; i < truePopulationSize; i++) {
