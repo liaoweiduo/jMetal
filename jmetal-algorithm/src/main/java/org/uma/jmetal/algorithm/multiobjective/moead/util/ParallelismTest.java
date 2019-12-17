@@ -76,10 +76,10 @@ public class ParallelismTest {
         problem = (DoubleProblem) ProblemUtils.<DoubleSolution> loadProblem(problemName);
 
         // generate different solutions
-        long[][] computationTimeList = new long[problem.getNumberOfVariables()][100];
+        long[][] computationTimeList = new long[problem.getNumberOfVariables()][10];
         for (int featureNum = 1; featureNum <= problem.getNumberOfVariables(); featureNum++){
             JMetalLogger.logger.info(problemName + " start calculation featureNum:" + featureNum);
-            List<DoubleSolution> solutionList = getSolutionList(problem, featureNum,100);
+            List<DoubleSolution> solutionList = getSolutionList(problem, featureNum,10);
             int solutionIndex = 0;
             for (DoubleSolution solution : solutionList){
                 long computationTime = System.currentTimeMillis();
@@ -101,7 +101,7 @@ public class ParallelismTest {
                 maxTime = (maxTime < computationTime)?computationTime:maxTime;
                 minTime = (minTime > computationTime)?computationTime:minTime;
             }
-            averageTime = totalTime / 100.0;
+            averageTime = totalTime / 10.0;
             outputStr += "\n" + averageTime + ", " + maxTime + ", " + minTime +";";
         }
         JMetalLogger.logger.info(problemName + " ClassificationMethodTimeCostTestForDifferentFeatureNumber:" +
