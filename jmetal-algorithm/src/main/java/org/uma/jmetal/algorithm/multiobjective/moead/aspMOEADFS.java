@@ -10,6 +10,7 @@ import org.uma.jmetal.problem.Problem;
 import org.uma.jmetal.problem.multiobjective.FeatureSelection.FeatureSelection;
 import org.uma.jmetal.solution.DoubleSolution;
 import org.uma.jmetal.util.JMetalException;
+import org.uma.jmetal.util.JMetalLogger;
 
 import javax.management.JMException;
 import java.io.BufferedReader;
@@ -20,8 +21,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 
 public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
@@ -31,7 +34,7 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 
 	// for parallelism
 	private int subPopulationNum = 2;
-	private int[] populationAssign;
+	protected int[] populationAssign;
 	private int overlappingSize;
 	private ExecutorService executorService;
 	private volatile Messages message;
@@ -60,9 +63,111 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 		this.executorService = Executors.newFixedThreadPool(subPopulationNum);
 		this.populationAssign = new int[populationSize];
 
+		this.overlappingSize = overlappingSize;
+		this.message = new Messages(subPopulationNum);
+		this.migrationRatio = migrationRatio;
+	}
+
+	@Override
+	public void run() {
+
+		// assign sub processors.
+		populationAssignTask();
+		for (int subPopulationIndex = 0; subPopulationIndex < subPopulationNum; subPopulationIndex ++){
+
+			int truePopulationSize = 0;
+//			for (int individualIndex = 0; individualIndex < populationSize; individualIndex++)
+//				if (this.populationAssign[individualIndex] == subPopulationIndex)
+//					truePopulationSize ++ ;
+//			int totalSubPopulationSize = truePopulationSize;
+//			if (subPopulationIndex != 0)
+//				totalSubPopulationSize += overlappingSize;
+//			if (subPopulationIndex != subPopulationNum - 1)
+//				totalSubPopulationSize += overlappingSize;
+
+			int[] refAssign = new int[this.populationSize]; // 0 no relate; 1 true population; 2 overlapping population
+			for (int i = 0;i<this.populationSize;i++){
+				if (this.populationAssign[i] == subPopulationIndex){
+					truePopulationSize ++ ;
+					refAssign[i] = 1;
+					for (int overlappingIndex = i-1;
+						 overlappingIndex >= i-this.overlappingSize && overlappingIndex >= 0;
+						 overlappingIndex--){
+						if (refAssign[overlappingIndex] == 0){
+							refAssign[overlappingIndex] = 2;
+						}
+					}
+					for (int overlappingIndex = i+1;
+						 overlappingIndex <= i+this.overlappingSize && overlappingIndex < this.populationSize;
+						 overlappingIndex++){
+						if (refAssign[overlappingIndex] == 0){
+							refAssign[overlappingIndex] = 2;
+						}
+					}
+				}
+			}
+			// filled true population index list
+			int listIndex = 0; int listValue = 0;
+			for (int i = 0;i<this.populationSize;i++){
+				if (refAssign[i] == 1 || refAssign[i] == 2){
+					listValue++;
+				}
+			}
+			int totalSubPopulationSize = listValue;
+
+			SubProcess subProcess = new SubProcess(problem, totalSubPopulationSize, truePopulationSize,
+					populationAssign, overlappingSize, truePopulationSize, maxEvaluations, crossoverOperator,
+					mutationOperator, functionType, dataDirectory, neighborhoodSelectionProbability,
+					maximumNumberOfReplacedSolutions, neighborSize, subPopulationNum, subPopulationIndex);
+			algorithmList.add(subProcess);
+		}
+
+		Future[] subProcessState = new Future[subPopulationNum];
+		for (int subPopulationIndex = 0; subPopulationIndex < subPopulationNum; subPopulationIndex ++){
+			SubProcess subProcess = algorithmList.get(subPopulationIndex);
+			subProcessState[subPopulationIndex] = executorService.submit(subProcess);
+		}
+		executorService.shutdown();
+		while(!executorService.isTerminated());
+
+		// check sub process state.
+		for (int subProcessIndex = 0; subProcessIndex < subPopulationNum; subProcessIndex ++){
+			try {
+				subProcessState[subProcessIndex].get();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// combine the results of all the sub algorithm.
+
+		for (int algorithmindex = 0; algorithmindex < subPopulationNum; algorithmindex++){
+			AbstractMOEAD<DoubleSolution> algorithm = algorithmList.get(algorithmindex);
+			List<List<DoubleSolution>> recordSolutions = algorithm.getRecordSolutions();
+
+			for (int recordIndex = 0; recordIndex < recordSolutions.size(); recordIndex ++){
+				List<DoubleSolution> recordSolution = recordSolutions.get(recordIndex);
+                if (algorithmindex == 0) {    // first algorithm
+                    this.recordSolutions.add(recordSolution);
+                }
+                else {
+                    List<DoubleSolution> tmp = this.recordSolutions.get(recordIndex);
+                    tmp.addAll(recordSolution);
+                    this.recordSolutions.set(recordIndex, tmp);
+                }
+			}
+			List<DoubleSolution> subPopulation = algorithm.population;
+			this.population.addAll(subPopulation);
+            this.populationSize = this.population.size();
+			this.resultPopulationSize = this.population.size();
+		}
+	}
+
+	public void populationAssignTask(){
 		String basePath = "jmetal-problem/src/main/resources/computationCostsForAspMOEADFS/";
-		double[] computationTimeCosts;
-		computationTimeCosts = new double[problem.getNumberOfVariables()];
+		double[] computationTimeCosts = new double[problem.getNumberOfVariables()];
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(basePath + problem.getName() + ".dat"));
 			String record = br.readLine();
@@ -71,7 +176,10 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 				computationTimeCosts[index] = Double.parseDouble(splitedRecord[index]);
 			}
 		} catch (Exception e){
-			throw new JMetalException("Can not find evaluation cost data for problem:" + problem.getName() + "and", e) ;
+			JMetalLogger.logger.info("No pre knowledge for island size assignment.\n" +
+					"Island size is assigned equally.");
+			for (int i = 0 ;i < problem.getNumberOfVariables(); i ++)
+				computationTimeCosts[i] = 1.0;
 		}
 		double sumComputationTime = 0;
 		for (int featureNumIndex = 0; featureNumIndex < problem.getNumberOfVariables(); featureNumIndex++){
@@ -101,6 +209,26 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 			sum += featureNumAssign[featureNumAssignIndex];
 		}
 		featureNumAssign[subPopulationNum - 1] = populationSize - sum;
+
+		// manually tune featureNumAssign;
+		if (problem.getName().equals("Vehicle")) {
+			if (subPopulationNum == 2) {
+				featureNumAssign = new int[]{11, 7};
+			} else if (subPopulationNum == 4) {
+				featureNumAssign = new int[]{6, 5, 4, 3};
+			} else if (subPopulationNum == 8) {
+				featureNumAssign = new int[]{3, 3, 2, 2, 2, 2, 2, 2};
+			}
+		} else if (problem.getName().equals("Musk1")){
+			if (subPopulationNum == 2) {
+				featureNumAssign = new int[]{110,56};
+			} else if (subPopulationNum == 4) {
+				featureNumAssign = new int[]{73, 36, 29, 28};
+			} else if (subPopulationNum == 8) {
+				featureNumAssign = new int[]{45,22,20,18,17,16,14,14};
+			}
+		}
+
 		sum = featureNumAssign[0]; int assignedIslandIndex = 0;
 		for (int individualIndex = 0; individualIndex < populationSize; individualIndex ++){
 			if (individualIndex == sum){
@@ -108,61 +236,6 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 				sum += featureNumAssign[assignedIslandIndex];
 			}
 			this.populationAssign[individualIndex] = assignedIslandIndex;
-		}
-
-		this.overlappingSize = overlappingSize;
-		this.message = new Messages(subPopulationNum);
-		this.migrationRatio = migrationRatio;
-
-		for (int subPopulationIndex = 0; subPopulationIndex < subPopulationNum; subPopulationIndex ++){
-
-			int truePopulationSize = 0;
-			for (int individualIndex = 0; individualIndex < populationSize; individualIndex++)
-				if (this.populationAssign[individualIndex] == subPopulationIndex)
-					truePopulationSize ++ ;
-			int totalSubPopulationSize = truePopulationSize;
-			if (subPopulationIndex != 0)
-			    totalSubPopulationSize += overlappingSize;
-			if (subPopulationIndex != subPopulationNum - 1)
-			    totalSubPopulationSize += overlappingSize;
-			SubProcess subProcess = new SubProcess(problem, totalSubPopulationSize, truePopulationSize,
-					populationAssign, overlappingSize, truePopulationSize, maxEvaluations, crossoverOperator,
-					mutationOperator, functionType, dataDirectory, neighborhoodSelectionProbability,
-					maximumNumberOfReplacedSolutions, neighborSize, subPopulationNum, subPopulationIndex);
-			algorithmList.add(subProcess);
-		}
-	}
-
-	@Override
-	public void run() {
-		for (int subPopulationIndex = 0; subPopulationIndex < subPopulationNum; subPopulationIndex ++){
-			SubProcess subProcess = algorithmList.get(subPopulationIndex);
-			executorService.submit(subProcess);
-		}
-		executorService.shutdown();
-		while(!executorService.isTerminated());
-
-		// combine the results of all the sub algorithm.
-
-		for (int algorithmindex = 0; algorithmindex < subPopulationNum; algorithmindex++){
-			AbstractMOEAD<DoubleSolution> algorithm = algorithmList.get(algorithmindex);
-			List<List<DoubleSolution>> recordSolutions = algorithm.getRecordSolutions();
-
-			for (int recordIndex = 0; recordIndex < recordSolutions.size(); recordIndex ++){
-				List<DoubleSolution> recordSolution = recordSolutions.get(recordIndex);
-                if (algorithmindex == 0) {    // first algorithm
-                    this.recordSolutions.add(recordSolution);
-                }
-                else {
-                    List<DoubleSolution> tmp = this.recordSolutions.get(recordIndex);
-                    tmp.addAll(recordSolution);
-                    this.recordSolutions.set(recordIndex, tmp);
-                }
-			}
-			List<DoubleSolution> subPopulation = algorithm.population;
-			this.population.addAll(subPopulation);
-            this.populationSize = this.population.size();
-			this.resultPopulationSize = this.population.size();
 		}
 	}
 
@@ -173,6 +246,7 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 		private int truePopulationSize;
 		private int[] populationAssign;
 		private boolean[] changeFlag;
+		private int[] truePopulationIndexList;
 
 		private double[] refPoints;
 		private double weight = 0.01;
@@ -205,13 +279,14 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 			this.truePopulationSize = truePopulationSize;
 			this.populationAssign = populationAssign;
 			this.changeFlag = new boolean[populationSize];
+			this.truePopulationIndexList = new int[this.truePopulationSize];
 		}
 
 		@Override
 		public void run() {
 		    computingTime = System.currentTimeMillis();
-			initializePopulation();
 			initializeUniformRef();
+			initializePopulation();
 			initializeNeighborhood();
 			idealPoint.update(population);
 
@@ -220,9 +295,11 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 			do {
 				//	updateNeighborhoodTopology();
 				int[] permutation = new int[truePopulationSize];
-				int shift = (subPopulationId == 0)?0:overlappingSize;
 				MOEADUtils.randomPermutation(
-						permutation, truePopulationSize, shift);
+						permutation, truePopulationSize);
+				for (int permutationIndex = 0; permutationIndex < truePopulationSize; permutationIndex++){
+					permutation[permutationIndex] = this.truePopulationIndexList[permutation[permutationIndex]];
+				}
 
 				if((iterations%this.stepIteration)==0){
 					List<DoubleSolution> list = new ArrayList<DoubleSolution>();
@@ -330,22 +407,54 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 			return duplicate;
 		}
 
-		private void initializeUniformRef() {
-			refPoints = new double[this.populationSize];
+		private void initializeUniformRef() {   // and correct this.populationSize
 			int wholePopulationSize = this.populationAssign.length;
 			double step = 1.0 / wholePopulationSize;	// total
-			int start = 0;
-			for (int populationIndex = 0; populationIndex < wholePopulationSize; populationIndex ++){
-				if (this.populationAssign[populationIndex] == this.subPopulationId){
-					start = populationIndex;
-					break;
+			double[] wholeRefPoints = new double[wholePopulationSize];
+			for (int i = 0;i< wholePopulationSize;i++)
+				wholeRefPoints[i] = (i+1) * step;
+
+			// assign reference point, true on truePop
+			int[] refAssign = new int[wholePopulationSize]; // 0 no relate; 1 true population; 2 overlapping population
+
+			for (int i = 0;i<wholePopulationSize;i++){
+				if (this.populationAssign[i] == this.subPopulationId){
+					refAssign[i] = 1;
+					for (int overlappingIndex = i-1;
+						 overlappingIndex >= i-this.overlappingSize && overlappingIndex >= 0;
+						 overlappingIndex--){
+						if (refAssign[overlappingIndex] == 0){
+							refAssign[overlappingIndex] = 2;
+						}
+					}
+					for (int overlappingIndex = i+1;
+						 overlappingIndex <= i+this.overlappingSize && overlappingIndex < wholePopulationSize;
+						 overlappingIndex++){
+						if (refAssign[overlappingIndex] == 0){
+							refAssign[overlappingIndex] = 2;
+						}
+					}
 				}
 			}
-			double startPoint =  (double) (start
-					- ((this.subPopulationId == 0)?0:1) * this.overlappingSize)
-					/ (wholePopulationSize);
-			for(int i=0;i<this.populationSize;i++){
-				refPoints[i] = startPoint + (i+1) * step;
+
+			// filled true population index list
+			int listIndex = 0; int listValue = 0;
+			for (int i = 0;i<wholePopulationSize;i++){
+				if (refAssign[i] == 1){
+					this.truePopulationIndexList[listIndex++] = listValue;
+					listValue++;
+				} else if (refAssign[i] == 2){
+					listValue++;
+				}
+			}
+
+			// generate refPoints
+			refPoints = new double[this.populationSize];
+			int refPointsIndex = 0;
+			for (int i = 0;i<wholePopulationSize;i++){
+				if (refAssign[i] != 0){
+					refPoints[refPointsIndex++] = wholeRefPoints[i];
+				}
 			}
 		}
 
