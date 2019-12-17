@@ -26,7 +26,34 @@ public class ParallelismTest {
     public static void main(String[] args) throws Exception {
 //        parallelismTest();
         ClassificationMethodTimeCostTestForDifferentFeatureNumber(args);
-
+//        evaluateOne(args);
+    }
+    public static void evaluateOne (String[] args) throws Exception{
+        DoubleProblem problem;
+        oipMOEADFS algorithm;
+        MutationOperator<DoubleSolution> mutation;
+        DifferentialEvolutionCrossover crossover;
+        String problemName = "org.uma.jmetal.problem.multiobjective.FeatureSelection.";
+        String referenceParetoFront = "jmetal-core/src/main/resources/pareto_fronts/";
+        String timeDataOutputFileName = "Data/evaluationTimeTest/";
+        if (args.length == 1) {
+            problemName += args[0];
+            referenceParetoFront += args[0] + ".pf";
+            timeDataOutputFileName += args[0] + ".dat";
+        } else {
+            problemName += "Vehicle";
+            referenceParetoFront += "Vehicle.pf";
+            timeDataOutputFileName += "Vehicle.dat";
+        }
+        problem = (DoubleProblem) ProblemUtils.<DoubleSolution> loadProblem(problemName);
+        DoubleSolution solution = new DefaultDoubleSolution(problem);
+        for (int variableIndex = 0; variableIndex < problem.getNumberOfVariables(); variableIndex++)
+            solution.setVariableValue(variableIndex, 1.0);
+        long computationTime = System.currentTimeMillis();
+        problem.evaluate(solution);
+        computationTime = System.currentTimeMillis() - computationTime;
+        JMetalLogger.logger.info(problemName + " all feature computation time:" +
+                computationTime);
     }
 
     public static void ClassificationMethodTimeCostTestForDifferentFeatureNumber (String[] args) throws Exception {
@@ -51,6 +78,7 @@ public class ParallelismTest {
         // generate different solutions
         long[][] computationTimeList = new long[problem.getNumberOfVariables()][100];
         for (int featureNum = 1; featureNum <= problem.getNumberOfVariables(); featureNum++){
+            JMetalLogger.logger.info(problemName + " start calculation featureNum:" + featureNum);
             List<DoubleSolution> solutionList = getSolutionList(problem, featureNum,100);
             int solutionIndex = 0;
             for (DoubleSolution solution : solutionList){
