@@ -1,6 +1,7 @@
 package org.uma.jmetal.util.experiment.util;
 
 import org.uma.jmetal.algorithm.Algorithm;
+import org.uma.jmetal.algorithm.CenterResults;
 import org.uma.jmetal.solution.Solution;
 import org.uma.jmetal.util.JMetalLogger;
 import org.uma.jmetal.util.experiment.Experiment;
@@ -17,6 +18,7 @@ import java.util.List;
  */
 public class ExperimentAlgorithm<S extends Solution<?>, Result extends List<S>>  {
   private Algorithm<Result> algorithm;
+  private CenterResults<Result> algorithmForRS;
   private String algorithmTag;
   private String problemTag;
   private String referenceParetoFront;
@@ -96,6 +98,29 @@ public class ExperimentAlgorithm<S extends Solution<?>, Result extends List<S>> 
             .setVarFileOutputContext(new DefaultFileOutputContext(varFile))
             .setFunFileOutputContext(new DefaultFileOutputContext(funFile))
             .print();
+
+    if (algorithmForRS != null) {   // if has record solutions
+      // generate record solutions output directory
+      String recordSolutionsOutputDirectoryName = outputDirectoryName + "/RS" + runId;
+      File recordSolutionsOutputDirectory = new File(recordSolutionsOutputDirectoryName);
+      if (!recordSolutionsOutputDirectory.exists()) {
+        boolean result = new File(recordSolutionsOutputDirectoryName).mkdirs();
+        if (result) {
+          JMetalLogger.logger.info("Creating " + recordSolutionsOutputDirectoryName);
+        } else {
+          JMetalLogger.logger.severe("Creating" + recordSolutionsOutputDirectoryName + " failed");
+        }
+      }
+
+      for (int i = 0; i < algorithmForRS.getRecordSolutions().size();  i++){
+        Result recordSolutions = algorithmForRS.getRecordSolutions().get(i);
+        String funFileRS = recordSolutionsOutputDirectoryName + "/FUN" + i + ".tsv";
+        new SolutionListOutput(recordSolutions)
+                .setSeparator("\t")
+                .setFunFileOutputContext(new DefaultFileOutputContext(funFileRS))
+                .print();
+      }
+    }
   }
 
   public Algorithm<Result> getAlgorithm() {
@@ -113,4 +138,11 @@ public class ExperimentAlgorithm<S extends Solution<?>, Result extends List<S>> 
   public String getReferenceParetoFront() { return referenceParetoFront; }
 
   public int getRunId() { return this.runId;}
+
+  public ExperimentAlgorithm<S, Result> setRS(CenterResults<Result> RSAlgorithm){
+    this.algorithmForRS = RSAlgorithm;
+
+    return this;
+  }
+
 }

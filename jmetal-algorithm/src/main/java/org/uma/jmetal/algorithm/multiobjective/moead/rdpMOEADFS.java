@@ -29,8 +29,8 @@ public class rdpMOEADFS extends aspMOEADFS {
 	public void populationAssignTask() {
 		int numOfCore = getSubPopulationNum();
 		int islandSize = populationSize / numOfCore;
-		int leftIslandSize = islandSize / 2;
-		int rightIslandSize = (int) Math.ceil((double)islandSize / 2);
+		int leftIslandSize = (int) Math.ceil((double)islandSize / 2);
+		int rightIslandSize = islandSize / 2;
 		int islandId = -1;
 		for (int individualIndex = 0; individualIndex < leftIslandSize * numOfCore + populationSize % numOfCore; individualIndex ++){
 			if (islandId < populationSize % numOfCore){

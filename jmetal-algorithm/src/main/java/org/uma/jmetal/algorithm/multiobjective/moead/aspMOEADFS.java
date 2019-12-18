@@ -135,8 +135,12 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 			try {
 				subProcessState[subProcessIndex].get();
 			} catch (InterruptedException e) {
+				JMetalLogger.logger.info
+						("sub processor throws an interrupted exception, subProcessId:" + subProcessIndex);
 				e.printStackTrace();
 			} catch (ExecutionException e) {
+				JMetalLogger.logger.info
+						("sub processor throws an execution exception, subProcessId:" + subProcessIndex);
 				e.printStackTrace();
 			}
 		}
@@ -249,6 +253,7 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 		private int[] populationAssign;
 		private boolean[] changeFlag;
 		private int[] truePopulationIndexList;
+		private int[] refAssign;
 
 		private double[] refPoints;
 		private double weight = 0.01;
@@ -282,6 +287,7 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 			this.populationAssign = populationAssign;
 			this.changeFlag = new boolean[populationSize];
 			this.truePopulationIndexList = new int[this.truePopulationSize];
+			this.refAssign = new int[populationAssign.length];
 		}
 
 		@Override
@@ -355,16 +361,19 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 		private void migration(int iterations) {
 			if (iterations % migrationRatio == 0){
 				// put changed(flag true) overlapping individual into corresponding neighborhood area.
-				if (subPopulationId != 0)	// left overlapping
-					for (int populationIndex = 0; populationIndex < overlappingSize; populationIndex ++)
-						if (changeFlag[populationIndex]) {
-							message.subPopulation[subPopulationId - 1].offer((DoubleSolution) population.get(populationIndex).copy());
-						}
-				if (subPopulationId != subPopulationNum - 1)	// right overlapping
-					for (int populationIndex = populationSize - overlappingSize; populationIndex < populationSize; populationIndex ++)
-						if (changeFlag[populationIndex])
-							message.subPopulation[subPopulationId+1].offer((DoubleSolution) population.get(populationIndex).copy());
-				changeFlag = new boolean[populationSize];
+
+				int changeFlagIndex = -1;
+				for (int populationIndex = 0; populationIndex < this.populationAssign.length; populationIndex++){
+					if (this.refAssign[populationIndex] == 2 || this.refAssign[populationIndex] == 1){
+						changeFlagIndex ++ ;
+					}
+					if (this.refAssign[populationIndex] == 2 && this.changeFlag[changeFlagIndex]){
+						message.subPopulation[populationAssign[populationIndex]]
+								.offer((DoubleSolution) population.get(changeFlagIndex).copy());
+					}
+
+				}
+				this.changeFlag = new boolean[populationSize];
 
 				// read individual from own area, update using updateNeighborhood.
 				DoubleSolution individual;
@@ -418,9 +427,7 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 			for (int i = 0;i< wholePopulationSize;i++)
 				wholeRefPoints[i] = (i+1) * step;
 
-			// assign reference point, true on truePop
-			int[] refAssign = new int[wholePopulationSize]; // 0 no relate; 1 true population; 2 overlapping population
-
+			// assign reference point, true on truePop;	0 no relate; 1 true population; 2 overlapping population
 			for (int i = 0;i<wholePopulationSize;i++){
 				if (this.populationAssign[i] == this.subPopulationId){
 					refAssign[i] = 1;
@@ -486,7 +493,7 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 				// find 'niche' nearest neighboring subproblems
 				MOEADUtils.minFastSort(x, idx, populationSize, neighborSize);
 				//
-				System.arraycopy(idx, 0, neighborhood[i], 0, neighborSize);
+				System.arraycopy(idx, 0, neighborhood[i], 0, Math.min(neighborSize,populationSize));
 			}
 		}
 
