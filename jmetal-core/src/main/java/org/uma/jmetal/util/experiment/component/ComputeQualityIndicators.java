@@ -86,7 +86,7 @@ public class ComputeQualityIndicators<S extends Solution<?>, Result extends List
             List<PointSolution> normalizedPopulation = FrontUtils.convertFrontToSolutionList(normalizedFront);
             Double indicatorValue = (Double) indicator.evaluate((List<S>) normalizedPopulation);
 
-            JMetalLogger.logger.info(indicator.getName() + ": " + indicatorValue);
+            JMetalLogger.logger.info(frontFileName + ": " + indicator.getName() + ": " + indicatorValue);
 
             writeQualityIndicatorValueToFile(indicatorValue, qualityIndicatorFile);
 
