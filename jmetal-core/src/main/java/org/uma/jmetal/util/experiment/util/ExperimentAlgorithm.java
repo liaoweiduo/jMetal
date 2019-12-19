@@ -72,8 +72,8 @@ public class ExperimentAlgorithm<S extends Solution<?>, Result extends List<S>> 
       }
     }
 
-    String funFile = outputDirectoryName + "/FUN" + runId + ".tsv";
-    String varFile = outputDirectoryName + "/VAR" + runId + ".tsv";
+    String funFile = outputDirectoryName + "/" + experimentData.getOutputParetoFrontFileName() + runId + ".tsv";
+    String varFile = outputDirectoryName + "/" + experimentData.getOutputParetoSetFileName() + runId + ".tsv";
     JMetalLogger.logger.info(
             " Running algorithm: " + algorithmTag +
                     ", problem: " + problemTag +
@@ -114,7 +114,8 @@ public class ExperimentAlgorithm<S extends Solution<?>, Result extends List<S>> 
 
       for (int i = 0; i < algorithmForRS.getRecordSolutions().size();  i++){
         Result recordSolutions = algorithmForRS.getRecordSolutions().get(i);
-        String funFileRS = recordSolutionsOutputDirectoryName + "/FUN" + i + ".tsv";
+        String funFileRS = recordSolutionsOutputDirectoryName + "/" +
+                experimentData.getOutputParetoFrontFileName() + i + ".tsv";
         new SolutionListOutput(recordSolutions)
                 .setSeparator("\t")
                 .setFunFileOutputContext(new DefaultFileOutputContext(funFileRS))
@@ -145,4 +146,7 @@ public class ExperimentAlgorithm<S extends Solution<?>, Result extends List<S>> 
     return this;
   }
 
+  public CenterResults<Result> getRS () {
+    return algorithmForRS;
+  }
 }

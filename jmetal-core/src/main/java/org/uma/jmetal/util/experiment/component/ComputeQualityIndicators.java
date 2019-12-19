@@ -30,6 +30,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static java.util.stream.Collectors.toList;
 
 /**
  * This class computes the {@link QualityIndicator}s of an experiment. Once the algorithms of an
@@ -84,9 +85,34 @@ public class ComputeQualityIndicators<S extends Solution<?>, Result extends List
             Front normalizedFront = frontNormalizer.normalize(front);
             List<PointSolution> normalizedPopulation = FrontUtils.convertFrontToSolutionList(normalizedFront);
             Double indicatorValue = (Double) indicator.evaluate((List<S>) normalizedPopulation);
+
             JMetalLogger.logger.info(indicator.getName() + ": " + indicatorValue);
 
             writeQualityIndicatorValueToFile(indicatorValue, qualityIndicatorFile);
+
+            // if RS: evaluate RS
+            List<ExperimentAlgorithm<S, Result>> experimentAlgorithms = experiment.getAlgorithmList();
+            for (ExperimentAlgorithm<S, Result> experimentAlgorithm : experimentAlgorithms){
+              if (experimentAlgorithm.getRS() != null){
+                String frontFileNameRS_prefix = problemDirectory + "/RS"  + run;
+                List<String> RSdir = Files
+                        .list(Paths.get(frontFileNameRS_prefix))
+                        .map(s -> s.toString())
+                        .collect(toList());
+
+                String qualityIndicatorFileRS = problemDirectory + "/RS" + run + "/" + indicator.getName();
+                for (String frontFileNameRS : RSdir ){
+                    Front frontRS = new ArrayFront(frontFileNameRS);
+                    Front normalizedFrontRS = frontNormalizer.normalize(frontRS);
+                    List<PointSolution> normalizedPopulationRS = FrontUtils.convertFrontToSolutionList(normalizedFrontRS);
+                    Double indicatorValueRS = (Double) indicator.evaluate((List<S>) normalizedPopulationRS);
+
+                    JMetalLogger.logger.info(frontFileNameRS + ": " + indicator.getName() + ": " + indicatorValueRS);
+
+                    writeQualityIndicatorValueToFile(indicatorValueRS, qualityIndicatorFileRS);
+                }
+              }
+            }
           }
         }
       }
@@ -228,6 +254,17 @@ public class ComputeQualityIndicators<S extends Solution<?>, Result extends List
           String qualityIndicatorFile = problemDirectory + "/" + indicator.getName();
 
           resetFile(qualityIndicatorFile);
+
+          // if RS reset RS
+          if (algorithm.getRS() != null){
+            int runs = experiment.getIndependentRuns();
+            for (int run = 0; run < runs; run++){
+              String RSDirectory = problemDirectory + "/RS" + run;
+              String qualityIndicatorFileRS = RSDirectory + "/" + indicator.getName();
+
+              resetFile(qualityIndicatorFileRS);
+            }
+          }
         }
       }
     }
