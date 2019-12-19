@@ -57,11 +57,11 @@ public class rdpMOEADFS extends aspMOEADFS {
     @Override
 	public String getName() {
 		// TODO Auto-generated method stub
-		return "oipMOEAD-FS-" + getSubPopulationNum();
+		return "rdpMOEAD-FS-" + getSubPopulationNum();
 	}
 	@Override
 	public String getDescription() {
 		// TODO Auto-generated method stub
-		return "overlapping island mode parallel MOEAD with multiple reference points";
+		return "regularly distributed overlapping island mode parallel MOEAD with multiple reference points";
 	}
 }

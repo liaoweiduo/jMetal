@@ -27,7 +27,7 @@ import static java.util.stream.Collectors.toList;
  *
  * Reference input:
  * 1) Experiments/GetData/data/oipMOEAD-FS-1/Vehicle Experiments/GetData/data/oipMOEAD-FS-1/FUN_Vehicle.tsv Vehicle
- * 2) Experiments/GetData/data jmetal-core/src/test/resources/pareto_fronts/Vehicle.pf Vehicle
+ * 2) Experiments/GetData/data jmetal-core/src/main/resources/pareto_fronts/Vehicle.pf Vehicle
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class GenerateReferenceFrontFromFile {
@@ -52,7 +52,8 @@ public class GenerateReferenceFrontFromFile {
               .map(s -> s.toString())
               .collect(toList());
       for (String algorithmDir : algorithmDirList ){
-        if (Files.isDirectory(Paths.get(algorithmDir))){  // algorithm dir
+        if (Files.isDirectory(Paths.get(algorithmDir))
+                && Files.isDirectory(Paths.get(algorithmDir + "/" + problemName))){  // algorithm dir
           fileNameList.addAll(Files
                   .list(Paths.get(algorithmDir + '/' + problemName))
                   .map(s -> s.toString())

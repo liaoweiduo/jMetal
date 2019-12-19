@@ -217,7 +217,9 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 		// manually tune featureNumAssign;
 		int[] featureNumAssign = new int[subPopulationNum];
 		if (problem.getName().equals("Vehicle")) {
-			if (subPopulationNum == 2) {
+			if (subPopulationNum == 1) {
+				featureNumAssign = new int[]{18};
+			} else if (subPopulationNum == 2) {
 				featureNumAssign = new int[]{11, 7};
 			} else if (subPopulationNum == 4) {
 				featureNumAssign = new int[]{7, 4, 3, 4};
@@ -227,12 +229,40 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 				featureNumAssign = new int[]{2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 			}
 		} else if (problem.getName().equals("Musk1")){
-			if (subPopulationNum == 2) {
-				featureNumAssign = new int[]{110,56};
+			if (subPopulationNum == 1) {
+				featureNumAssign = new int[]{166};
+			} else if (subPopulationNum == 2) {
+				featureNumAssign = new int[]{105,61};
 			} else if (subPopulationNum == 4) {
 				featureNumAssign = new int[]{71, 36, 30, 29};
 			} else if (subPopulationNum == 8) {
-				featureNumAssign = new int[]{45,22,20,18,17,16,14,14};
+				featureNumAssign = new int[]{45,22, 20, 18, 17, 16, 14, 14};
+			} else if (subPopulationNum == 16) {
+				featureNumAssign = new int[]{32, 17, 13, 12, 11, 10, 9, 8, 7, 7, 7, 7, 7, 7, 6, 6};
+			}
+		} else if (problem.getName().equals("Madelon")){
+			if (subPopulationNum == 1) {
+				featureNumAssign = new int[]{200};
+			} else if (subPopulationNum == 2) {
+				featureNumAssign = new int[]{140, 60};
+			} else if (subPopulationNum == 4) {
+				featureNumAssign = new int[]{98, 42, 32, 28};
+			} else if (subPopulationNum == 8) {
+				featureNumAssign = new int[]{68, 29, 22, 19, 17, 16, 15, 14};
+			} else if (subPopulationNum == 16) {
+				featureNumAssign = new int[]{47, 20, 16, 13, 12, 10, 10, 10, 9, 9, 8, 8, 8, 7, 7, 6};
+			}
+		} else if (problem.getName().equals("Isolet")){
+			if (subPopulationNum == 1) {
+				featureNumAssign = new int[]{200};
+			} else if (subPopulationNum == 2){
+				featureNumAssign = new int[]{141,59};
+			} else if (subPopulationNum == 4) {
+				featureNumAssign = new int[]{100, 41, 31, 28};
+			} else if (subPopulationNum == 8) {
+				featureNumAssign = new int[]{70, 29, 23, 19, 17, 15, 14, 13};
+			} else if (subPopulationNum == 16) {
+				featureNumAssign = new int[]{48, 21, 16, 13, 11, 10, 10, 10, 9, 9, 8, 8, 7, 7, 7, 6};
 			}
 		}
 

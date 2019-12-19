@@ -109,7 +109,7 @@ public class GetData {
                             new InvertedGenerationalDistance<DoubleSolution>(),
                             new InvertedGenerationalDistancePlus<DoubleSolution>()))
                     .setIndependentRuns(RUN_TO-RUN_FROM+1)
-                    .setNumberOfCores(32)
+                    .setNumberOfCores(25)
                     .build();
 
     new ExecuteAlgorithms<>(experiment).run();
@@ -244,35 +244,7 @@ public class GetData {
 //                    .build() ;
 //            algorithms.add(new ExperimentAlgorithm<>(algorithm, problemList.get(i), run));
 //        }
-
-//        for (int i = 0; i < problemList.size(); i++) {
-//            MutationOperator<DoubleSolution> mutation;
-//            DifferentialEvolutionCrossover crossover;
-//            double cr = 0.6 ;
-//            double f = 0.7 ;
-//            crossover = new DifferentialEvolutionCrossover(cr, f, "rand/1/bin");
-//            double mutationProbability = 1.0 / problemList.get(i).getProblem().getNumberOfVariables();
-//            double mutationDistributionIndex = 20.0;
-//            mutation = new PolynomialMutation(mutationProbability, mutationDistributionIndex);
-//            int populationSize = Math.min(problemList.get(i).getProblem().getNumberOfVariables(),200);
-//            AbstractMOEAD<DoubleSolution> algorithm = new MOEADBuilder(
-//                    problemList.get(i).getProblem(),
-//                    MOEADBuilder.Variant.MOEADSTAT)
-//                    .setCrossover(crossover)
-//                    .setMutation(mutation)
-//                    .setMaxEvaluations(200)
-//                    .setPopulationSize(populationSize)
-//                    .setResultPopulationSize(populationSize)
-//                    .setNeighborhoodSelectionProbability(0.85)
-//                    .setMaximumNumberOfReplacedSolutions(1)
-//                    .setNeighborSize(Math.max(populationSize / 10, 4))
-//                    .setNumberOfThreads(NUM_SUBPOPULATION) // number of core
-//                    .setOverlappingSize(Math.max(populationSize / 10, 4) / 2)
-//                    .setMigrationRatio(10)
-//                    .build() ;
-//            algorithms.add(new ExperimentAlgorithm<>(algorithm, problemList.get(i), run).setRS(algorithm)); // set RS
-//        }
-
+//
 //        for (int i = 0; i < problemList.size(); i++) {
 //            MutationOperator<DoubleSolution> mutation;
 //            DifferentialEvolutionCrossover crossover;
@@ -311,7 +283,7 @@ public class GetData {
 //            double mutationDistributionIndex = 20.0;
 //            mutation = new PolynomialMutation(mutationProbability, mutationDistributionIndex);
 //            int populationSize = Math.min(problemList.get(i).getProblem().getNumberOfVariables(),200);
-//            Algorithm<List<DoubleSolution>> algorithm = new MOEADBuilder(
+//            AbstractMOEAD<DoubleSolution> algorithm = new MOEADBuilder(
 //                    problemList.get(i).getProblem(),
 //                    MOEADBuilder.Variant.oipMOEADFS)
 //                    .setCrossover(crossover)
@@ -326,7 +298,7 @@ public class GetData {
 //                    .setOverlappingSize(Math.max(populationSize / 10, 4) / 2)
 //                    .setMigrationRatio(10)
 //                    .build() ;
-//            algorithms.add(new ExperimentAlgorithm<>(algorithm, problemList.get(i), run));
+//            algorithms.add(new ExperimentAlgorithm<>(algorithm, problemList.get(i), run).setRS(algorithm)); // set RS
 //        }
 //
 //        for (int i = 0; i < problemList.size(); i++) {
@@ -356,7 +328,174 @@ public class GetData {
 //                    .build() ;
 //            algorithms.add(new ExperimentAlgorithm<>(algorithm, problemList.get(i), run));
 //        }
-
+//
+//        for (int i = 0; i < problemList.size(); i++) {
+//            MutationOperator<DoubleSolution> mutation;
+//            DifferentialEvolutionCrossover crossover;
+//            double cr = 0.6 ;
+//            double f = 0.7 ;
+//            crossover = new DifferentialEvolutionCrossover(cr, f, "rand/1/bin");
+//            double mutationProbability = 1.0 / problemList.get(i).getProblem().getNumberOfVariables();
+//            double mutationDistributionIndex = 20.0;
+//            mutation = new PolynomialMutation(mutationProbability, mutationDistributionIndex);
+//            int populationSize = Math.min(problemList.get(i).getProblem().getNumberOfVariables(),200);
+//            AbstractMOEAD<DoubleSolution> algorithm = new MOEADBuilder(
+//                    problemList.get(i).getProblem(),
+//                    MOEADBuilder.Variant.aspMOEADFS)
+//                    .setCrossover(crossover)
+//                    .setMutation(mutation)
+//                    .setMaxEvaluations(200)
+//                    .setPopulationSize(populationSize)
+//                    .setResultPopulationSize(populationSize)
+//                    .setNeighborhoodSelectionProbability(0.85)
+//                    .setMaximumNumberOfReplacedSolutions(1)
+//                    .setNeighborSize(Math.max(populationSize / 10, 4))
+//                    .setNumberOfThreads(2) // number of core
+//                    .setOverlappingSize(Math.max(populationSize / 10, 4) / 2)
+//                    .setMigrationRatio(10)
+//                    .build() ;
+//            algorithms.add(new ExperimentAlgorithm<>(algorithm, problemList.get(i), run).setRS(algorithm)); // set RS
+//        }
+//
+//        for (int i = 0; i < problemList.size(); i++) {
+//            MutationOperator<DoubleSolution> mutation;
+//            DifferentialEvolutionCrossover crossover;
+//            double cr = 0.6 ;
+//            double f = 0.7 ;
+//            crossover = new DifferentialEvolutionCrossover(cr, f, "rand/1/bin");
+//            double mutationProbability = 1.0 / problemList.get(i).getProblem().getNumberOfVariables();
+//            double mutationDistributionIndex = 20.0;
+//            mutation = new PolynomialMutation(mutationProbability, mutationDistributionIndex);
+//            int populationSize = Math.min(problemList.get(i).getProblem().getNumberOfVariables(),200);
+//            AbstractMOEAD<DoubleSolution> algorithm = new MOEADBuilder(
+//                    problemList.get(i).getProblem(),
+//                    MOEADBuilder.Variant.aspMOEADFS)
+//                    .setCrossover(crossover)
+//                    .setMutation(mutation)
+//                    .setMaxEvaluations(200)
+//                    .setPopulationSize(populationSize)
+//                    .setResultPopulationSize(populationSize)
+//                    .setNeighborhoodSelectionProbability(0.85)
+//                    .setMaximumNumberOfReplacedSolutions(1)
+//                    .setNeighborSize(Math.max(populationSize / 10, 4))
+//                    .setNumberOfThreads(4) // number of core
+//                    .setOverlappingSize(Math.max(populationSize / 10, 4) / 2)
+//                    .setMigrationRatio(10)
+//                    .build() ;
+//            algorithms.add(new ExperimentAlgorithm<>(algorithm, problemList.get(i), run).setRS(algorithm)); // set RS
+//        }
+//
+//        for (int i = 0; i < problemList.size(); i++) {
+//            MutationOperator<DoubleSolution> mutation;
+//            DifferentialEvolutionCrossover crossover;
+//            double cr = 0.6 ;
+//            double f = 0.7 ;
+//            crossover = new DifferentialEvolutionCrossover(cr, f, "rand/1/bin");
+//            double mutationProbability = 1.0 / problemList.get(i).getProblem().getNumberOfVariables();
+//            double mutationDistributionIndex = 20.0;
+//            mutation = new PolynomialMutation(mutationProbability, mutationDistributionIndex);
+//            int populationSize = Math.min(problemList.get(i).getProblem().getNumberOfVariables(),200);
+//            Algorithm<List<DoubleSolution>> algorithm = new MOEADBuilder(
+//                    problemList.get(i).getProblem(),
+//                    MOEADBuilder.Variant.aspMOEADFS)
+//                    .setCrossover(crossover)
+//                    .setMutation(mutation)
+//                    .setMaxEvaluations(200)
+//                    .setPopulationSize(populationSize)
+//                    .setResultPopulationSize(populationSize)
+//                    .setNeighborhoodSelectionProbability(0.85)
+//                    .setMaximumNumberOfReplacedSolutions(1)
+//                    .setNeighborSize(Math.max(populationSize / 10, 4))
+//                    .setNumberOfThreads(8) // number of core
+//                    .setOverlappingSize(Math.max(populationSize / 10, 4) / 2)
+//                    .setMigrationRatio(10)
+//                    .build() ;
+//            algorithms.add(new ExperimentAlgorithm<>(algorithm, problemList.get(i), run));
+//        }
+//
+//        for (int i = 0; i < problemList.size(); i++) {
+//            MutationOperator<DoubleSolution> mutation;
+//            DifferentialEvolutionCrossover crossover;
+//            double cr = 0.6 ;
+//            double f = 0.7 ;
+//            crossover = new DifferentialEvolutionCrossover(cr, f, "rand/1/bin");
+//            double mutationProbability = 1.0 / problemList.get(i).getProblem().getNumberOfVariables();
+//            double mutationDistributionIndex = 20.0;
+//            mutation = new PolynomialMutation(mutationProbability, mutationDistributionIndex);
+//            int populationSize = Math.min(problemList.get(i).getProblem().getNumberOfVariables(),200);
+//            AbstractMOEAD<DoubleSolution> algorithm = new MOEADBuilder(
+//                    problemList.get(i).getProblem(),
+//                    MOEADBuilder.Variant.rdpMOEADFS)
+//                    .setCrossover(crossover)
+//                    .setMutation(mutation)
+//                    .setMaxEvaluations(200)
+//                    .setPopulationSize(populationSize)
+//                    .setResultPopulationSize(populationSize)
+//                    .setNeighborhoodSelectionProbability(0.85)
+//                    .setMaximumNumberOfReplacedSolutions(1)
+//                    .setNeighborSize(Math.max(populationSize / 10, 4))
+//                    .setNumberOfThreads(2) // number of core
+//                    .setOverlappingSize(Math.max(populationSize / 10, 4) / 2)
+//                    .setMigrationRatio(10)
+//                    .build() ;
+//            algorithms.add(new ExperimentAlgorithm<>(algorithm, problemList.get(i), run).setRS(algorithm)); // set RS
+//        }
+//
+//        for (int i = 0; i < problemList.size(); i++) {
+//            MutationOperator<DoubleSolution> mutation;
+//            DifferentialEvolutionCrossover crossover;
+//            double cr = 0.6 ;
+//            double f = 0.7 ;
+//            crossover = new DifferentialEvolutionCrossover(cr, f, "rand/1/bin");
+//            double mutationProbability = 1.0 / problemList.get(i).getProblem().getNumberOfVariables();
+//            double mutationDistributionIndex = 20.0;
+//            mutation = new PolynomialMutation(mutationProbability, mutationDistributionIndex);
+//            int populationSize = Math.min(problemList.get(i).getProblem().getNumberOfVariables(),200);
+//            AbstractMOEAD<DoubleSolution> algorithm = new MOEADBuilder(
+//                    problemList.get(i).getProblem(),
+//                    MOEADBuilder.Variant.rdpMOEADFS)
+//                    .setCrossover(crossover)
+//                    .setMutation(mutation)
+//                    .setMaxEvaluations(200)
+//                    .setPopulationSize(populationSize)
+//                    .setResultPopulationSize(populationSize)
+//                    .setNeighborhoodSelectionProbability(0.85)
+//                    .setMaximumNumberOfReplacedSolutions(1)
+//                    .setNeighborSize(Math.max(populationSize / 10, 4))
+//                    .setNumberOfThreads(4) // number of core
+//                    .setOverlappingSize(Math.max(populationSize / 10, 4) / 2)
+//                    .setMigrationRatio(10)
+//                    .build() ;
+//            algorithms.add(new ExperimentAlgorithm<>(algorithm, problemList.get(i), run).setRS(algorithm)); // set RS
+//        }
+//
+//        for (int i = 0; i < problemList.size(); i++) {
+//            MutationOperator<DoubleSolution> mutation;
+//            DifferentialEvolutionCrossover crossover;
+//            double cr = 0.6 ;
+//            double f = 0.7 ;
+//            crossover = new DifferentialEvolutionCrossover(cr, f, "rand/1/bin");
+//            double mutationProbability = 1.0 / problemList.get(i).getProblem().getNumberOfVariables();
+//            double mutationDistributionIndex = 20.0;
+//            mutation = new PolynomialMutation(mutationProbability, mutationDistributionIndex);
+//            int populationSize = Math.min(problemList.get(i).getProblem().getNumberOfVariables(),200);
+//            Algorithm<List<DoubleSolution>> algorithm = new MOEADBuilder(
+//                    problemList.get(i).getProblem(),
+//                    MOEADBuilder.Variant.rdpMOEADFS)
+//                    .setCrossover(crossover)
+//                    .setMutation(mutation)
+//                    .setMaxEvaluations(200)
+//                    .setPopulationSize(populationSize)
+//                    .setResultPopulationSize(populationSize)
+//                    .setNeighborhoodSelectionProbability(0.85)
+//                    .setMaximumNumberOfReplacedSolutions(1)
+//                    .setNeighborSize(Math.max(populationSize / 10, 4))
+//                    .setNumberOfThreads(8) // number of core
+//                    .setOverlappingSize(Math.max(populationSize / 10, 4) / 2)
+//                    .setMigrationRatio(10)
+//                    .build() ;
+//            algorithms.add(new ExperimentAlgorithm<>(algorithm, problemList.get(i), run));
+//        }
     }
     return algorithms;
   }
