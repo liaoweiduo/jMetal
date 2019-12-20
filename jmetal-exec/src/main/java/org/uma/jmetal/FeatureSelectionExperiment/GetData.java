@@ -14,6 +14,8 @@ import org.uma.jmetal.operator.impl.crossover.SBXCrossover;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.problem.DoubleProblem;
 import org.uma.jmetal.problem.Problem;
+import org.uma.jmetal.problem.multiobjective.FeatureSelection.Isolet;
+import org.uma.jmetal.problem.multiobjective.FeatureSelection.Madelon;
 import org.uma.jmetal.problem.multiobjective.FeatureSelection.Musk1;
 import org.uma.jmetal.problem.multiobjective.FeatureSelection.Vehicle;
 import org.uma.jmetal.problem.multiobjective.dtlz.*;
@@ -88,8 +90,10 @@ public class GetData {
     String experimentBaseDirectory = "Experiments";
 
     List<ExperimentProblem<DoubleSolution>> problemList = new ArrayList<>();
-    problemList.add(new ExperimentProblem<>(new Vehicle()));  //.changeReferenceFrontTo("DTLZ1.2D.pf")
+//    problemList.add(new ExperimentProblem<>(new Vehicle()));  //.changeReferenceFrontTo("DTLZ1.2D.pf")
 //      problemList.add(new ExperimentProblem<>(new Musk1()));
+      problemList.add(new ExperimentProblem<>(new Madelon()));
+//      problemList.add(new ExperimentProblem<>(new Isolet()));
 
     List<ExperimentAlgorithm<DoubleSolution, List<DoubleSolution>>> algorithmList =
             configureAlgorithmList(problemList);
