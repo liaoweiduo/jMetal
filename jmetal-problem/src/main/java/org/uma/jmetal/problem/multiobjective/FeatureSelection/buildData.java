@@ -21,10 +21,10 @@ public class buildData {
 
     public static void buildFromRaw(String[] args) throws IOException {
         String basePath = "jmetal-problem/src/main/resources/classificationData/";
-        int featuresNumber = 617;
-        int instanceNumber = 7797;
-        String dataName = "Isolet";
-        Dataset data = FileHandler.loadDataset(new File(basePath + dataName + "/data.dat"),0,",");
+        int featuresNumber = 100;
+        int instanceNumber = 606;
+        String dataName = "Hillvalley";
+        Dataset data = FileHandler.loadDataset(new File(basePath + dataName + "/Hill_Valley_without_noise_Training.data"),100,",");
 //        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/madelon_valid.data")));
 //        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xac.dat"),18," "));
 //        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xad.dat"),18," "));
@@ -87,17 +87,14 @@ public class buildData {
                 newDataTest.add(new DenseInstance(new double[]{ins.value(featureIndex)},ins.classValue()));
             KNearestNeighbors knn1 = new KNearestNeighbors(5);
             knn1.buildClassifier(newDataTrain);
-            int correct = 0;
-            /* Classify all instances and check with the correct class values */
-            for (Instance inst : newDataTest) {
-                Object predictedClassValue = knn1.classify(inst);
-                Object realClassValue = inst.classValue();
-                if (predictedClassValue.equals(realClassValue))
-                    correct++;
+            double balancedAccuracy1 = 0;
+            Map<Object, PerformanceMeasure> pm1 = EvaluateDataset.testDataset(knn1, newDataTest);
+            for (Object o: pm1.keySet()){
+                balancedAccuracy1 += pm1.get(o).getAccuracy();
             }
-            double accuracy = (double) correct / newDataTest.size();
-            accuracyList[featureIndex] = accuracy;
-            System.out.println("#"+featureIndex+" accuracy:" + accuracy);
+            balancedAccuracy1 /= pm1.size();
+            accuracyList[featureIndex] = balancedAccuracy1;
+            System.out.println("#"+featureIndex+" accuracy:" + balancedAccuracy1);
         }
         BufferedWriter bw = new BufferedWriter(new FileWriter(new File(basePath + dataName + "/accuracy.dat"), true));
         for (double a : accuracyList)
