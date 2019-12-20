@@ -170,6 +170,10 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 	}
 
 	public void populationAssignTask(){
+		int sum = 0;
+		int[] featureNumAssign = new int[subPopulationNum];
+
+
 //		String basePath = "jmetal-problem/src/main/resources/computationCostsForAspMOEADFS/";
 //		double[] computationTimeCosts = new double[problem.getNumberOfVariables()];
 //		try {
@@ -191,7 +195,7 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 //		}
 //		double computationTimePerIsland = sumComputationTime / subPopulationNum;
 //		double currentComputationTime = 0;
-//		int[] featureNumAssign = new int[subPopulationNum]; int islandIndex = 0; int islandSize = 0;
+//		int islandIndex = 0; int islandSize = 0;
 //		int featureNumIndex;
 //		for (featureNumIndex = 0; featureNumIndex < problem.getNumberOfVariables(); featureNumIndex++){
 //			if (islandIndex == subPopulationNum - 1)
@@ -206,7 +210,6 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 //			}
 //		}
 //		featureNumAssign[islandIndex] = problem.getNumberOfVariables() - featureNumIndex + 1;
-//		int sum = 0;
 //		for (int featureNumAssignIndex = 0; featureNumAssignIndex < subPopulationNum - 1; featureNumAssignIndex++){
 //			featureNumAssign[featureNumAssignIndex] = featureNumAssign[featureNumAssignIndex]
 //					* populationSize / problem.getNumberOfVariables() ;
@@ -215,18 +218,29 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 //		featureNumAssign[subPopulationNum - 1] = populationSize - sum;
 
 		// manually tune featureNumAssign;
-		int[] featureNumAssign = new int[subPopulationNum];
 		if (problem.getName().equals("Vehicle")) {
 			if (subPopulationNum == 1) {
 				featureNumAssign = new int[]{18};
 			} else if (subPopulationNum == 2) {
-				featureNumAssign = new int[]{11, 7};
+				featureNumAssign = new int[]{67, 33};
 			} else if (subPopulationNum == 4) {
-				featureNumAssign = new int[]{7, 4, 3, 4};
+				featureNumAssign = new int[]{46, 22, 17, 15};
 			} else if (subPopulationNum == 8) {
 				featureNumAssign = new int[]{3, 3, 2, 2, 2, 2, 2, 2};
 			} else if (subPopulationNum == 16) {
 				featureNumAssign = new int[]{2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+			}
+		} else if (problem.getName().equals("Hillvalley")){
+			if (subPopulationNum == 1) {
+				featureNumAssign = new int[]{100};
+			} else if (subPopulationNum == 2) {
+				featureNumAssign = new int[]{105,61};
+			} else if (subPopulationNum == 4) {
+				featureNumAssign = new int[]{71, 36, 30, 29};
+			} else if (subPopulationNum == 8) {
+				featureNumAssign = new int[]{28, 16, 12, 11, 10, 9, 8, 6};
+			} else if (subPopulationNum == 16) {
+				featureNumAssign = new int[]{17,11,8,7,6,6,6,5,5,5,5,4,4,4,4,3};
 			}
 		} else if (problem.getName().equals("Musk1")){
 			if (subPopulationNum == 1) {
@@ -266,7 +280,7 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 			}
 		}
 
-		int sum = featureNumAssign[0]; int assignedIslandIndex = 0;
+		sum = featureNumAssign[0]; int assignedIslandIndex = 0;
 		for (int individualIndex = 0; individualIndex < populationSize; individualIndex ++){
 			if (individualIndex == sum){
 				assignedIslandIndex ++;
