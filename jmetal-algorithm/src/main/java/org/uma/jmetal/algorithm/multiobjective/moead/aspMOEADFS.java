@@ -172,59 +172,57 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 	public void populationAssignTask(){
 		int sum = 0;
 		int[] featureNumAssign = new int[subPopulationNum];
-
-
-//		String basePath = "jmetal-problem/src/main/resources/computationCostsForAspMOEADFS/";
-//		double[] computationTimeCosts = new double[problem.getNumberOfVariables()];
-//		try {
-//			BufferedReader br = new BufferedReader(new FileReader(basePath + problem.getName() + ".dat"));
-//			String record = br.readLine();
-//			String[] splitedRecord = record.split(",");
-//			for (int index = 0; index < problem.getNumberOfVariables(); index++) {
-//				computationTimeCosts[index] = Double.parseDouble(splitedRecord[index]);
-//			}
-//		} catch (Exception e){
-//			JMetalLogger.logger.info("No pre knowledge for island size assignment.\n" +
-//					"Island size is assigned equally.");
-//			for (int i = 0 ;i < problem.getNumberOfVariables(); i ++)
-//				computationTimeCosts[i] = 1.0;
-//		}
-//		double sumComputationTime = 0;
-//		for (int featureNumIndex = 0; featureNumIndex < problem.getNumberOfVariables(); featureNumIndex++){
-//			sumComputationTime += computationTimeCosts[featureNumIndex];
-//		}
-//		double computationTimePerIsland = sumComputationTime / subPopulationNum;
-//		double currentComputationTime = 0;
-//		int islandIndex = 0; int islandSize = 0;
-//		int featureNumIndex;
-//		for (featureNumIndex = 0; featureNumIndex < problem.getNumberOfVariables(); featureNumIndex++){
-//			if (islandIndex == subPopulationNum - 1)
-//				break;
-//			if (currentComputationTime + computationTimeCosts[featureNumIndex] > computationTimePerIsland){
-//				featureNumAssign[islandIndex++] = islandSize;
-//				currentComputationTime = computationTimeCosts[featureNumIndex];
-//				islandSize = 1;
-//			} else {
-//				currentComputationTime += computationTimeCosts[featureNumIndex];
-//				islandSize ++;
-//			}
-//		}
-//		featureNumAssign[islandIndex] = problem.getNumberOfVariables() - featureNumIndex + 1;
-//		for (int featureNumAssignIndex = 0; featureNumAssignIndex < subPopulationNum - 1; featureNumAssignIndex++){
-//			featureNumAssign[featureNumAssignIndex] = featureNumAssign[featureNumAssignIndex]
-//					* populationSize / problem.getNumberOfVariables() ;
-//			sum += featureNumAssign[featureNumAssignIndex];
-//		}
-//		featureNumAssign[subPopulationNum - 1] = populationSize - sum;
+		String basePath = "jmetal-problem/src/main/resources/computationCostsForAspMOEADFS/";
+		double[] computationTimeCosts = new double[problem.getNumberOfVariables()];
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(basePath + problem.getName() + ".dat"));
+			String record = br.readLine();
+			String[] splitedRecord = record.split(",");
+			for (int index = 0; index < problem.getNumberOfVariables(); index++) {
+				computationTimeCosts[index] = Double.parseDouble(splitedRecord[index]);
+			}
+		} catch (Exception e){
+			JMetalLogger.logger.info("No pre knowledge for island size assignment.\n" +
+					"Island size is assigned equally.");
+			for (int i = 0 ;i < problem.getNumberOfVariables(); i ++)
+				computationTimeCosts[i] = 1.0;
+		}
+		double sumComputationTime = 0;
+		for (int featureNumIndex = 0; featureNumIndex < problem.getNumberOfVariables(); featureNumIndex++){
+			sumComputationTime += computationTimeCosts[featureNumIndex];
+		}
+		double computationTimePerIsland = sumComputationTime / subPopulationNum;
+		double currentComputationTime = 0;
+		int islandIndex = 0; int islandSize = 0;
+		int featureNumIndex;
+		for (featureNumIndex = 0; featureNumIndex < problem.getNumberOfVariables(); featureNumIndex++){
+			if (islandIndex == subPopulationNum - 1)
+				break;
+			if (currentComputationTime + computationTimeCosts[featureNumIndex] > computationTimePerIsland){
+				featureNumAssign[islandIndex++] = islandSize;
+				currentComputationTime = computationTimeCosts[featureNumIndex];
+				islandSize = 1;
+			} else {
+				currentComputationTime += computationTimeCosts[featureNumIndex];
+				islandSize ++;
+			}
+		}
+		featureNumAssign[islandIndex] = problem.getNumberOfVariables() - featureNumIndex + 1;
+		for (int featureNumAssignIndex = 0; featureNumAssignIndex < subPopulationNum - 1; featureNumAssignIndex++){
+			featureNumAssign[featureNumAssignIndex] = featureNumAssign[featureNumAssignIndex]
+					* populationSize / problem.getNumberOfVariables() ;
+			sum += featureNumAssign[featureNumAssignIndex];
+		}
+		featureNumAssign[subPopulationNum - 1] = populationSize - sum;
 
 		// manually tune featureNumAssign;
 		if (problem.getName().equals("Vehicle")) {
 			if (subPopulationNum == 1) {
 				featureNumAssign = new int[]{18};
 			} else if (subPopulationNum == 2) {
-				featureNumAssign = new int[]{67, 33};
+				featureNumAssign = new int[]{11, 7};
 			} else if (subPopulationNum == 4) {
-				featureNumAssign = new int[]{46, 22, 17, 15};
+				featureNumAssign = new int[]{8, 5, 3, 2};
 			} else if (subPopulationNum == 8) {
 				featureNumAssign = new int[]{3, 3, 2, 2, 2, 2, 2, 2};
 			} else if (subPopulationNum == 16) {
@@ -234,9 +232,9 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 			if (subPopulationNum == 1) {
 				featureNumAssign = new int[]{100};
 			} else if (subPopulationNum == 2) {
-				featureNumAssign = new int[]{105,61};
+				featureNumAssign = new int[]{67, 33};
 			} else if (subPopulationNum == 4) {
-				featureNumAssign = new int[]{71, 36, 30, 29};
+				featureNumAssign = new int[]{46, 22, 17, 15};
 			} else if (subPopulationNum == 8) {
 				featureNumAssign = new int[]{28, 16, 12, 11, 10, 9, 8, 6};
 			} else if (subPopulationNum == 16) {
