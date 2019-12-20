@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class ExperimentAlgorithm<S extends Solution<?>, Result extends List<S>>  {
   private Algorithm<Result> algorithm;
-  private CenterResults<Result> algorithmForRS;
+  private CenterResults<Result> algorithmForRS = null;
   private String algorithmTag;
   private String problemTag;
   private String referenceParetoFront;

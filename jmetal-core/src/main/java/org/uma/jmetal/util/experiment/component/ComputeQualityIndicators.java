@@ -91,26 +91,27 @@ public class ComputeQualityIndicators<S extends Solution<?>, Result extends List
             writeQualityIndicatorValueToFile(indicatorValue, qualityIndicatorFile);
 
             // if RS: evaluate RS
-            List<ExperimentAlgorithm<S, Result>> experimentAlgorithms = experiment.getAlgorithmList();
-            for (ExperimentAlgorithm<S, Result> experimentAlgorithm : experimentAlgorithms){
-              if (experimentAlgorithm.getRS() != null){
-                String frontFileNameRS_prefix = problemDirectory + "/RS"  + run;
-                List<String> RSdir = Files
-                        .list(Paths.get(frontFileNameRS_prefix))
-                        .map(s -> s.toString())
-                        .collect(toList());
+            if (algorithm.getRS() != null){
+              String frontFileNameRS_prefix = problemDirectory + "/RS"  + run;
+              Files.list(Paths.get(frontFileNameRS_prefix));
+              List<String> RSdir = Files
+                      .list(Paths.get(frontFileNameRS_prefix))
+                      .map(s -> s.toString())
+                      .collect(toList());
+              RSdir.removeIf(string -> !string.contains("FUN"));
 
-                String qualityIndicatorFileRS = problemDirectory + "/RS" + run + "/" + indicator.getName();
-                for (String frontFileNameRS : RSdir ){
-                    Front frontRS = new ArrayFront(frontFileNameRS);
-                    Front normalizedFrontRS = frontNormalizer.normalize(frontRS);
-                    List<PointSolution> normalizedPopulationRS = FrontUtils.convertFrontToSolutionList(normalizedFrontRS);
-                    Double indicatorValueRS = (Double) indicator.evaluate((List<S>) normalizedPopulationRS);
+              String qualityIndicatorFileRS = problemDirectory + "/RS" + run + "/" + indicator.getName();
+              for (int FUNIndex = 0; FUNIndex < RSdir.size(); FUNIndex++){
+                String frontFileNameRS = frontFileNameRS_prefix + "/" +
+                        experiment.getOutputParetoFrontFileName() + FUNIndex + ".tsv";
+                Front frontRS = new ArrayFront(frontFileNameRS);
+                Front normalizedFrontRS = frontNormalizer.normalize(frontRS);
+                List<PointSolution> normalizedPopulationRS = FrontUtils.convertFrontToSolutionList(normalizedFrontRS);
+                Double indicatorValueRS = (Double) indicator.evaluate((List<S>) normalizedPopulationRS);
 
-                    JMetalLogger.logger.info(frontFileNameRS + ": " + indicator.getName() + ": " + indicatorValueRS);
+                JMetalLogger.logger.info(frontFileNameRS + ": " + indicator.getName() + ": " + indicatorValueRS);
 
-                    writeQualityIndicatorValueToFile(indicatorValueRS, qualityIndicatorFileRS);
-                }
+                writeQualityIndicatorValueToFile(indicatorValueRS, qualityIndicatorFileRS);
               }
             }
           }

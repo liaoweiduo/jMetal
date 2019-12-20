@@ -51,6 +51,7 @@ public class GenerateReferenceFrontFromFile {
               .list(Paths.get(inputFileName))
               .map(s -> s.toString())
               .collect(toList());
+      algorithmDirList.removeIf(algorithm -> !algorithm.contains("MOEAD")); // moead algorithm generate reference front
       for (String algorithmDir : algorithmDirList ){
         if (Files.isDirectory(Paths.get(algorithmDir))
                 && Files.isDirectory(Paths.get(algorithmDir + "/" + problemName))){  // algorithm dir
