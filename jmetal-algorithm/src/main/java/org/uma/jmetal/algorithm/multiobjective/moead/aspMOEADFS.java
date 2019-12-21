@@ -172,6 +172,7 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 	public void populationAssignTask(){
 		int sum = 0;
 		int[] featureNumAssign = new int[subPopulationNum];
+
 		String basePath = "jmetal-problem/src/main/resources/computationCostsForAspMOEADFS/";
 		double[] computationTimeCosts = new double[problem.getNumberOfVariables()];
 		try {
@@ -232,9 +233,9 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 			if (subPopulationNum == 1) {
 				featureNumAssign = new int[]{100};
 			} else if (subPopulationNum == 2) {
-				featureNumAssign = new int[]{67, 33};
+				featureNumAssign = new int[]{59, 41};
 			} else if (subPopulationNum == 4) {
-				featureNumAssign = new int[]{46, 22, 17, 15};
+				featureNumAssign = new int[]{40, 24, 19, 17};
 			} else if (subPopulationNum == 8) {
 				featureNumAssign = new int[]{28, 16, 12, 11, 10, 9, 8, 6};
 			} else if (subPopulationNum == 16) {

@@ -21,10 +21,10 @@ public class buildData {
 
     public static void buildFromRaw(String[] args) throws IOException {
         String basePath = "jmetal-problem/src/main/resources/classificationData/";
-        int featuresNumber = 100;
-        int instanceNumber = 606;
-        String dataName = "Hillvalley";
-        Dataset data = FileHandler.loadDataset(new File(basePath + dataName + "/Hill_Valley_without_noise_Training.data"),100,",");
+        int featuresNumber = 60;
+        int instanceNumber = 208;
+        String dataName = "Sonar";
+        Dataset data = FileHandler.loadDataset(new File(basePath + dataName + "/sonar.all-data"),60,",");
 //        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/madelon_valid.data")));
 //        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xac.dat"),18," "));
 //        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xad.dat"),18," "));
@@ -65,7 +65,7 @@ public class buildData {
         double errorRate = (double) wrong / dataTest.size();
         System.out.println("error rate:" + errorRate);
 
-        System.out.println("balanced error rate:");
+        System.out.println("balanced accuracy:");
         Map<Object, PerformanceMeasure> pm = EvaluateDataset.testDataset(knn, dataTest);
         double balancedAccuracy = 0;
         for(Object o:pm.keySet()) {
