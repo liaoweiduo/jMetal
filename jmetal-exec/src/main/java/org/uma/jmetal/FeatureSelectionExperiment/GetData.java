@@ -88,16 +88,16 @@ public class GetData {
 
     List<ExperimentProblem<DoubleSolution>> problemList = new ArrayList<>();
       problemList.add(new ExperimentProblem<>(new Australian()));
-//    problemList.add(new ExperimentProblem<>(new Vehicle()));  //.changeReferenceFrontTo("DTLZ1.2D.pf")
-//      problemList.add(new ExperimentProblem<>(new Sonar()));
-//      problemList.add(new ExperimentProblem<>(new Hillvalley()));
+    problemList.add(new ExperimentProblem<>(new Vehicle()));  //.changeReferenceFrontTo("DTLZ1.2D.pf")
+      problemList.add(new ExperimentProblem<>(new Sonar()));
+      problemList.add(new ExperimentProblem<>(new Hillvalley()));
 //      problemList.add(new ExperimentProblem<>(new Musk1()));
 //      problemList.add(new ExperimentProblem<>(new Madelon()));
 //      problemList.add(new ExperimentProblem<>(new Isolet()));
 
     List<ExperimentAlgorithm<DoubleSolution, List<DoubleSolution>>> algorithmList =
-            configureAlgorithmListForData(problemList);
-//      configureAlgorithmListForIndicator(problemList);
+//            configureAlgorithmListForData(problemList);
+      configureAlgorithmListForIndicator(problemList);
 
     Experiment<DoubleSolution, List<DoubleSolution>> experiment =
             new ExperimentBuilder<DoubleSolution, List<DoubleSolution>>(CLASS_NAME)
