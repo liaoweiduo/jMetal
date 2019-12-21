@@ -21,10 +21,10 @@ public class buildData {
 
     public static void buildFromRaw(String[] args) throws IOException {
         String basePath = "jmetal-problem/src/main/resources/classificationData/";
-        int featuresNumber = 60;
-        int instanceNumber = 208;
-        String dataName = "Sonar";
-        Dataset data = FileHandler.loadDataset(new File(basePath + dataName + "/sonar.all-data"),60,",");
+        int featuresNumber = 279;
+        int instanceNumber = 452;
+        String dataName = "Arrhythmia";
+        Dataset data = FileHandler.loadDataset(new File(basePath + dataName + "/arrhythmia.data"),279,",");
 //        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/madelon_valid.data")));
 //        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xac.dat"),18," "));
 //        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xad.dat"),18," "));
@@ -34,13 +34,20 @@ public class buildData {
 //        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xah.dat"),18," "));
 //        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xai.dat"),18," "));
 
-
-
         // pre process data
 //        for (Instance ins : data){
 //            ins.removeAttribute(0);
 //            ins.removeAttribute(0);
 //        }
+        for (Instance ins : data) {
+            for (int i = 0; i < featuresNumber; i++){
+                if (ins.get(i).isNaN()){
+                    ins.put(i, 0.0);
+                }
+            }
+        }
+
+
 
         // 7 3 sampling
         Sampling s = Sampling.SubSampling;
@@ -79,6 +86,11 @@ public class buildData {
         // calculate accuracy of each single feature
         double[] accuracyList = new double[featuresNumber];
         for (int featureIndex = 0; featureIndex < featuresNumber; featureIndex++){
+//            if (featureIndex == 19){
+//                accuracyList[featureIndex] = 0;
+//                System.out.println("#"+featureIndex+" accuracy:" + 0);
+//                continue;
+//            }
             Dataset newDataTrain = new DefaultDataset();
             Dataset newDataTest = new DefaultDataset();
             for (Instance ins : dataTrain)
@@ -88,11 +100,16 @@ public class buildData {
             KNearestNeighbors knn1 = new KNearestNeighbors(5);
             knn1.buildClassifier(newDataTrain);
             double balancedAccuracy1 = 0;
-            Map<Object, PerformanceMeasure> pm1 = EvaluateDataset.testDataset(knn1, newDataTest);
-            for (Object o: pm1.keySet()){
-                balancedAccuracy1 += pm1.get(o).getAccuracy();
+            try {
+                Map<Object, PerformanceMeasure> pm1 = EvaluateDataset.testDataset(knn1, newDataTest);
+
+                for (Object o: pm1.keySet()){
+                    balancedAccuracy1 += pm1.get(o).getAccuracy();
+                }
+                balancedAccuracy1 /= pm1.size();
+            } catch (NullPointerException e){
+                System.out.println("#"+featureIndex+" null pointer exception.");
             }
-            balancedAccuracy1 /= pm1.size();
             accuracyList[featureIndex] = balancedAccuracy1;
             System.out.println("#"+featureIndex+" accuracy:" + balancedAccuracy1);
         }
