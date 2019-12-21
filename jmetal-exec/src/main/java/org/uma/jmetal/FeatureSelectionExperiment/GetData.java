@@ -87,8 +87,8 @@ public class GetData {
     String experimentBaseDirectory = "Experiments";
 
     List<ExperimentProblem<DoubleSolution>> problemList = new ArrayList<>();
-//      problemList.add(new ExperimentProblem<>(new Australian()));
-    problemList.add(new ExperimentProblem<>(new Vehicle()));  //.changeReferenceFrontTo("DTLZ1.2D.pf")
+      problemList.add(new ExperimentProblem<>(new Australian()));
+//    problemList.add(new ExperimentProblem<>(new Vehicle()));  //.changeReferenceFrontTo("DTLZ1.2D.pf")
 //      problemList.add(new ExperimentProblem<>(new Sonar()));
 //      problemList.add(new ExperimentProblem<>(new Hillvalley()));
 //      problemList.add(new ExperimentProblem<>(new Musk1()));
