@@ -32,6 +32,7 @@ import static java.util.stream.Collectors.toList;
  */
 public class GenerateReferenceFrontFromFile {
   public static void main(String[] args) throws IOException {
+    int number_of_files = 0;
     if (args.length != 3) {
       throw new JMetalException("Wrong number of arguments: two file names and problem name are required.");
     }
@@ -73,10 +74,12 @@ public class GenerateReferenceFrontFromFile {
     int numberOfObjectives = determineNumberOfObjectives(fileNameList.get(0));
     for (String fileName: fileNameList) {
       System.out.println(fileName) ;
+      number_of_files ++;
       archive.addAll(StoredSolutionsUtils.readSolutionsFromFile(fileName,numberOfObjectives)) ;
     }
 
     StoredSolutionsUtils.writeToOutput(archive, new DefaultFileOutputContext(outputFileName));
+    System.out.println("process number of files:" + number_of_files);
   }
 
 

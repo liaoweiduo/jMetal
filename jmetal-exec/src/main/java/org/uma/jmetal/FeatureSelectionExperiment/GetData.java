@@ -92,6 +92,7 @@ public class GetData {
 //      problemList.add(new ExperimentProblem<>(new Sonar()));
 //      problemList.add(new ExperimentProblem<>(new Hillvalley()));
 //      problemList.add(new ExperimentProblem<>(new Musk1()));
+//      problemList.add(new ExperimentProblem<>(new Arrhythmia()));
       problemList.add(new ExperimentProblem<>(new Madelon()));
 //      problemList.add(new ExperimentProblem<>(new Isolet()));
 
@@ -230,31 +231,6 @@ public class GetData {
 //                  .build() ;
 //          algorithms.add(new ExperimentAlgorithm<>(algorithm, problemList.get(i), run).setRS(algorithm));
 //        }
-
-        for (int i = 0; i < problemList.size(); i++) {
-            MutationOperator<DoubleSolution> mutation;
-            DifferentialEvolutionCrossover crossover;
-            double cr = 0.6 ;
-            double f = 0.7 ;
-            crossover = new DifferentialEvolutionCrossover(cr, f, "rand/1/bin");
-            double mutationProbability = 1.0 / problemList.get(i).getProblem().getNumberOfVariables();
-            double mutationDistributionIndex = 20.0;
-            mutation = new PolynomialMutation(mutationProbability, mutationDistributionIndex);
-            int populationSize = Math.min(problemList.get(i).getProblem().getNumberOfVariables(),200);
-            AbstractMOEAD<DoubleSolution> algorithm = new MOEADBuilder(
-                    problemList.get(i).getProblem(),
-                    MOEADBuilder.Variant.MOEADSTAT)
-                    .setCrossover(crossover)
-                    .setMutation(mutation)
-                    .setMaxEvaluations(200)
-                    .setPopulationSize(populationSize)
-                    .setResultPopulationSize(populationSize)
-                    .setNeighborhoodSelectionProbability(0.85)
-                    .setMaximumNumberOfReplacedSolutions(1)
-                    .setNeighborSize(Math.max(populationSize / 10, 4))
-                    .build() ;
-            algorithms.add(new ExperimentAlgorithm<>(algorithm, problemList.get(i), run).setRS(algorithm));
-        }
 
 //        for (int i = 0; i < problemList.size(); i++) {
 //            MutationOperator<DoubleSolution> mutation;
@@ -590,6 +566,31 @@ public class GetData {
                     .setMigrationRatio(10)
                     .build() ;
             algorithms.add(new ExperimentAlgorithm<>(algorithm, problemList.get(i), run).setRS(algorithm));
+        }
+
+        for (int i = 0; i < problemList.size(); i++) {
+          MutationOperator<DoubleSolution> mutation;
+          DifferentialEvolutionCrossover crossover;
+          double cr = 0.6 ;
+          double f = 0.7 ;
+          crossover = new DifferentialEvolutionCrossover(cr, f, "rand/1/bin");
+          double mutationProbability = 1.0 / problemList.get(i).getProblem().getNumberOfVariables();
+          double mutationDistributionIndex = 20.0;
+          mutation = new PolynomialMutation(mutationProbability, mutationDistributionIndex);
+          int populationSize = Math.min(problemList.get(i).getProblem().getNumberOfVariables(),200);
+          AbstractMOEAD<DoubleSolution> algorithm = new MOEADBuilder(
+                  problemList.get(i).getProblem(),
+                  MOEADBuilder.Variant.MOEADSTAT)
+                  .setCrossover(crossover)
+                  .setMutation(mutation)
+                  .setMaxEvaluations(200)
+                  .setPopulationSize(populationSize)
+                  .setResultPopulationSize(populationSize)
+                  .setNeighborhoodSelectionProbability(0.85)
+                  .setMaximumNumberOfReplacedSolutions(1)
+                  .setNeighborSize(Math.max(populationSize / 10, 4))
+                  .build() ;
+          algorithms.add(new ExperimentAlgorithm<>(algorithm, problemList.get(i), run).setRS(algorithm));
         }
     }
     return algorithms;
