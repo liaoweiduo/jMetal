@@ -97,8 +97,8 @@ public class GetData {
 //      problemList.add(new ExperimentProblem<>(new Isolet()));
 
     List<ExperimentAlgorithm<DoubleSolution, List<DoubleSolution>>> algorithmList =
-//            configureAlgorithmListForData(problemList);
-      configureAlgorithmListForIndicator(problemList);
+            configureAlgorithmListForData(problemList);
+//      configureAlgorithmListForIndicator(problemList);
 
     Experiment<DoubleSolution, List<DoubleSolution>> experiment =
             new ExperimentBuilder<DoubleSolution, List<DoubleSolution>>(CLASS_NAME)
