@@ -167,6 +167,15 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
             this.populationSize = this.population.size();
 			this.resultPopulationSize = this.population.size();
 		}
+
+		// print computation time on each processor
+		int subPopulationNum = getSubPopulationNum();
+		String subPopulationTimeList = "";
+		for (int subPopulationIndex = 0; subPopulationIndex < subPopulationNum; subPopulationIndex++){
+			oipMOEADFS.SubProcess subAlgorithm = algorithmList.get(subPopulationIndex);
+			subPopulationTimeList += subAlgorithm.getComputingTime() + "ms; ";
+		}
+		JMetalLogger.logger.info("Sub progress execution time: " + subPopulationTimeList);
 	}
 
 	public void populationAssignTask(){
