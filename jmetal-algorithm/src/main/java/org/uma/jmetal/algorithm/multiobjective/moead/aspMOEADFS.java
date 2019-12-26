@@ -278,7 +278,7 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 			} else if (subPopulationNum == 4) {
 				featureNumAssign = new int[]{71, 36, 30, 29};
 			} else if (subPopulationNum == 8) {
-				featureNumAssign = new int[]{45,22, 20, 18, 17, 16, 14, 14};
+				featureNumAssign = new int[]{40, 22, 20, 19, 18, 17, 15, 15};
 			} else if (subPopulationNum == 16) {
 				featureNumAssign = new int[]{32, 17, 13, 12, 11, 10, 9, 8, 7, 7, 7, 7, 7, 7, 6, 6};
 			}
@@ -286,11 +286,11 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 			if (subPopulationNum == 1) {
 				featureNumAssign = new int[]{200};
 			} else if (subPopulationNum == 2) {
-				featureNumAssign = new int[]{140, 60};
+				featureNumAssign = new int[]{120, 80};
 			} else if (subPopulationNum == 4) {
-				featureNumAssign = new int[]{98, 42, 32, 28};
+				featureNumAssign = new int[]{82, 44, 38, 36};
 			} else if (subPopulationNum == 8) {
-				featureNumAssign = new int[]{68, 29, 22, 19, 17, 16, 15, 14};
+				featureNumAssign = new int[]{58, 29, 22, 20, 19, 18, 17, 17};
 			} else if (subPopulationNum == 16) {
 				featureNumAssign = new int[]{47, 20, 16, 13, 12, 10, 10, 10, 9, 9, 8, 8, 8, 7, 7, 6};
 			}
