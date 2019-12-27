@@ -7,6 +7,7 @@ import org.uma.jmetal.operator.MutationOperator;
 import org.uma.jmetal.operator.impl.crossover.DifferentialEvolutionCrossover;
 import org.uma.jmetal.operator.impl.mutation.PolynomialMutation;
 import org.uma.jmetal.problem.Problem;
+import org.uma.jmetal.problem.multiobjective.FeatureSelection.Australian;
 import org.uma.jmetal.problem.multiobjective.FeatureSelection.Madelon;
 import org.uma.jmetal.qualityindicator.impl.GenerationalDistance;
 import org.uma.jmetal.qualityindicator.impl.InvertedGenerationalDistance;
@@ -77,13 +78,13 @@ public class pMOEADFS {
     String experimentBaseDirectory = "Experiments";
 
     List<ExperimentProblem<DoubleSolution>> problemList = new ArrayList<>();
-//      problemList.add(new ExperimentProblem<>(new Australian()));
+      problemList.add(new ExperimentProblem<>(new Australian()));
 //    problemList.add(new ExperimentProblem<>(new Vehicle()));  //.changeReferenceFrontTo("DTLZ1.2D.pf")
 //      problemList.add(new ExperimentProblem<>(new Sonar()));
 //      problemList.add(new ExperimentProblem<>(new Hillvalley()));
 //      problemList.add(new ExperimentProblem<>(new Musk1()));
 //      problemList.add(new ExperimentProblem<>(new Arrhythmia()));
-      problemList.add(new ExperimentProblem<>(new Madelon()));
+//      problemList.add(new ExperimentProblem<>(new Madelon()));
 //      problemList.add(new ExperimentProblem<>(new Isolet()));
 
     List<ExperimentAlgorithm<DoubleSolution, List<DoubleSolution>>> algorithmList =

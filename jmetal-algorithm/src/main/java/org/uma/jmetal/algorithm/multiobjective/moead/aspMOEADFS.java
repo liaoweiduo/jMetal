@@ -288,9 +288,9 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 			} else if (subPopulationNum == 2) {
 				featureNumAssign = new int[]{120, 80};
 			} else if (subPopulationNum == 4) {
-				featureNumAssign = new int[]{82, 44, 38, 36};
+				featureNumAssign = new int[]{72, 45, 43, 40};
 			} else if (subPopulationNum == 8) {
-				featureNumAssign = new int[]{58, 29, 22, 20, 19, 18, 17, 17};
+				featureNumAssign = new int[]{48, 29, 22, 22, 21, 20, 19, 19};
 			} else if (subPopulationNum == 16) {
 				featureNumAssign = new int[]{47, 20, 16, 13, 12, 10, 10, 10, 9, 9, 8, 8, 8, 7, 7, 6};
 			}
