@@ -282,7 +282,17 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 			} else if (subPopulationNum == 16) {
 				featureNumAssign = new int[]{32, 17, 13, 12, 11, 10, 9, 8, 7, 7, 7, 7, 7, 7, 6, 6};
 			}
-		} else if (problem.getName().equals("Madelon")){
+		} else if (problem.getName().equals("Arrhythmia")){
+			if (subPopulationNum == 1) {
+				featureNumAssign = new int[]{200};
+			} else if (subPopulationNum == 2) {
+				featureNumAssign = new int[]{130, 70};
+			} else if (subPopulationNum == 4) {
+				featureNumAssign = new int[]{81, 45, 38, 36};
+			} else if (subPopulationNum == 8) {
+				featureNumAssign = new int[]{51, 29, 23, 22, 20, 19, 18, 18};
+			}
+		}  else if (problem.getName().equals("Madelon")){
 			if (subPopulationNum == 1) {
 				featureNumAssign = new int[]{200};
 			} else if (subPopulationNum == 2) {
