@@ -80,9 +80,9 @@ public class pMOEADFS {
 //      problemList.add(new ExperimentProblem<>(new Australian()));
 //    problemList.add(new ExperimentProblem<>(new Vehicle()));  //.changeReferenceFrontTo("DTLZ1.2D.pf")
 //      problemList.add(new ExperimentProblem<>(new Sonar()));
-      problemList.add(new ExperimentProblem<>(new Hillvalley()));
+//      problemList.add(new ExperimentProblem<>(new Hillvalley()));
+      problemList.add(new ExperimentProblem<>(new Arrhythmia()));
 //      problemList.add(new ExperimentProblem<>(new Musk1()));
-//      problemList.add(new ExperimentProblem<>(new Arrhythmia()));
 //      problemList.add(new ExperimentProblem<>(new Madelon()));
 //      problemList.add(new ExperimentProblem<>(new Isolet()));
 
