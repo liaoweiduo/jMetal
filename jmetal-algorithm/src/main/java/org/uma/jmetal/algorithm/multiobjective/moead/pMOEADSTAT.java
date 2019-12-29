@@ -108,6 +108,8 @@ public class pMOEADSTAT extends MOEADSTAT {
 //			updateExternalPopulation();
 			iterations++;
 		} while (iterations < maxEvaluations);
+
+		executorService.shutdown();
 	}
 
 	@Override
