@@ -73,7 +73,7 @@ public class pMOEADSTATRunner extends AbstractAlgorithmRunner {
                 .setPopulationSize(Math.min(problem.getNumberOfVariables(),200))
                 .setResultPopulationSize(Math.min(problem.getNumberOfVariables(),200))
                 .setNeighborhoodSelectionProbability(0.85)
-                .setMaximumNumberOfReplacedSolutions(1)
+                .setMaximumNumberOfReplacedSolutions(Math.max(problem.getNumberOfVariables() / 10, 4))
                 .setNeighborSize(Math.max(problem.getNumberOfVariables() / 10, 4))
                 .setNumberOfThreads(NUM_OF_CORE)
                 .build() ;

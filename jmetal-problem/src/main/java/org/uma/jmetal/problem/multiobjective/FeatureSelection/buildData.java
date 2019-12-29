@@ -21,10 +21,10 @@ public class buildData {
 
     public static void buildFromRaw(String[] args) throws IOException {
         String basePath = "jmetal-problem/src/main/resources/classificationData/";
-        int featuresNumber = 279;
-        int instanceNumber = 452;
-        String dataName = "Arrhythmia";
-        Dataset data = FileHandler.loadDataset(new File(basePath + dataName + "/arrhythmia.data"),279,",");
+        int featuresNumber = 649;
+        int instanceNumber = 2000;
+        String dataName = "MultipleFeatures";
+        Dataset data = FileHandler.loadDataset(new File(basePath + dataName + "/data.dat"),0,",");
 //        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/madelon_valid.data")));
 //        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xac.dat"),18," "));
 //        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xad.dat"),18," "));

@@ -76,8 +76,9 @@ public class ParallelismTest {
         problem = (DoubleProblem) ProblemUtils.<DoubleSolution> loadProblem(problemName);
 
         // generate different solutions
-        long[][] computationTimeList = new long[problem.getNumberOfVariables()][10];
-        for (int featureNum = 1; featureNum <= problem.getNumberOfVariables(); featureNum++){
+        long[][] computationTimeList = new long[problem.getNumberOfVariables() / 50][10];
+        for (int featureNum = 1; featureNum <= problem.getNumberOfVariables(); featureNum+=50){
+            int fn = featureNum / 50;
             JMetalLogger.logger.info(problemName + " start calculation featureNum:" + featureNum);
             List<DoubleSolution> solutionList = getSolutionList(problem, featureNum,10);
             int solutionIndex = 0;
@@ -85,12 +86,12 @@ public class ParallelismTest {
                 long computationTime = System.currentTimeMillis();
                 problem.evaluate(solution);
                 computationTime = System.currentTimeMillis() - computationTime;
-                computationTimeList[featureNum-1][solutionIndex++] = computationTime;
+                computationTimeList[fn][solutionIndex++] = computationTime;
             }
         }
 
         String outputStr = "";
-        for (int featureNum = 0; featureNum < problem.getNumberOfVariables(); featureNum++){
+        for (int featureNum = 0; featureNum < computationTimeList.length; featureNum++){
             long[] computationTimes = computationTimeList[featureNum];
             long totalTime = 0;
             double averageTime = 0;

@@ -75,7 +75,7 @@ public class oipMOEADFSRunner extends AbstractAlgorithmRunner {
                 .setPopulationSize(populationSize)
                 .setResultPopulationSize(populationSize)
                 .setNeighborhoodSelectionProbability(0.85)
-                .setMaximumNumberOfReplacedSolutions(1)
+                .setMaximumNumberOfReplacedSolutions(Math.max(populationSize / 10, 4))
                 .setNeighborSize(Math.max(populationSize / 10, 4))
                 .setNumberOfThreads(NUM_OF_CORE) // number of core
                 .setOverlappingSize(Math.max(populationSize / 10, 4) / 2)

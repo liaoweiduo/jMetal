@@ -80,30 +80,30 @@ public class pMOEADSTAT extends MOEADSTAT {
 				}
 			}
 
-			//check for the same one in the population before evaluating
-			//the solution with large nref add random feature to nref
-			List<Integer> indexToAdd = checkForDuplicate();
-			//System.out.println("Re-initializing "+indexToRandom.size());
-			subProcessState = new Future[indexToAdd.size()];
-			for (int i = 0; i < indexToAdd.size(); i++){
-				int index = indexToAdd.get(i);
-				fixRunable fixProcess = new fixRunable(index);
-				subProcessState[i] = executorService.submit(fixProcess);
-			}
-			// check sub process state.
-			for (int subProcessIndex = 0; subProcessIndex < indexToAdd.size(); subProcessIndex ++){
-				try {
-					subProcessState[subProcessIndex].get();
-				} catch (InterruptedException e) {
-					JMetalLogger.logger.info
-							("fix processor throws an interrupted exception, subProcessId:" + subProcessIndex);
-					e.printStackTrace();
-				} catch (ExecutionException e) {
-					JMetalLogger.logger.info
-							("fix processor throws an execution exception, subProcessId:" + subProcessIndex);
-					e.printStackTrace();
-				}
-			}
+//			//check for the same one in the population before evaluating
+//			//the solution with large nref add random feature to nref
+//			List<Integer> indexToAdd = checkForDuplicate();
+//			//System.out.println("Re-initializing "+indexToRandom.size());
+//			subProcessState = new Future[indexToAdd.size()];
+//			for (int i = 0; i < indexToAdd.size(); i++){
+//				int index = indexToAdd.get(i);
+//				fixRunable fixProcess = new fixRunable(index);
+//				subProcessState[i] = executorService.submit(fixProcess);
+//			}
+//			// check sub process state.
+//			for (int subProcessIndex = 0; subProcessIndex < indexToAdd.size(); subProcessIndex ++){
+//				try {
+//					subProcessState[subProcessIndex].get();
+//				} catch (InterruptedException e) {
+//					JMetalLogger.logger.info
+//							("fix processor throws an interrupted exception, subProcessId:" + subProcessIndex);
+//					e.printStackTrace();
+//				} catch (ExecutionException e) {
+//					JMetalLogger.logger.info
+//							("fix processor throws an execution exception, subProcessId:" + subProcessIndex);
+//					e.printStackTrace();
+//				}
+//			}
 
 //			updateExternalPopulation();
 			iterations++;
