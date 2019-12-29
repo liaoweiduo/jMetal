@@ -1,5 +1,7 @@
 package org.uma.jmetal.problem.multiobjective.FeatureSelection;
 
+import libsvm.SelfOptimizingLinearLibSVM;
+import net.sf.javaml.classification.Classifier;
 import net.sf.javaml.classification.KNearestNeighbors;
 import net.sf.javaml.classification.evaluation.EvaluateDataset;
 import net.sf.javaml.classification.evaluation.PerformanceMeasure;
@@ -67,6 +69,8 @@ public abstract class FeatureSelection extends AbstractDoubleProblem {
             Dataset newDataTrain = getSelectedFeatureData(solution, dataTrain);
             Dataset newDataTest = getSelectedFeatureData(solution, dataTest);
 
+//            Classifier svm = new SelfOptimizingLinearLibSVM();
+//            svm.buildClassifier(newDataTrain);
             KNearestNeighbors knn = new KNearestNeighbors(5);
             knn.buildClassifier(newDataTrain);
 

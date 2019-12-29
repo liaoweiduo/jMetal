@@ -16,9 +16,9 @@ import org.uma.jmetal.util.JMetalException;
 
 public class MOEADSTAT extends AbstractMOEAD<DoubleSolution> {
 
-	private DifferentialEvolutionCrossover differentialEvolutionCrossover ;
-	private double[] refPoints;
-	private double weight = 0.01;
+	protected DifferentialEvolutionCrossover differentialEvolutionCrossover ;
+	protected double[] refPoints;
+	protected double weight = 0.01;
 
 	public MOEADSTAT(Problem<DoubleSolution> problem,
 			int populationSize,
@@ -244,7 +244,7 @@ public class MOEADSTAT extends AbstractMOEAD<DoubleSolution> {
 //		}
 //	}
 
-	private void initializeUniformRef() {
+	protected void initializeUniformRef() {
 		refPoints = new double[this.populationSize];
 		double step = 1.0 / this.populationSize;
 		for(int i=0;i<this.populationSize;i++){
@@ -328,7 +328,7 @@ public class MOEADSTAT extends AbstractMOEAD<DoubleSolution> {
 	 * @return fitness value
 	 * @throws JMetalException not a bi-objective problem
 	 */
-	private double fitnessFunction(DoubleSolution individual, double refPoint) throws JMetalException{
+	protected double fitnessFunction(DoubleSolution individual, double refPoint) throws JMetalException{
 		double fitness = 0;
 		if(problem.getNumberOfObjectives() != 2){
 			System.out.println("This is designed for feature selection only!!");
