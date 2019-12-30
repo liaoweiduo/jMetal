@@ -4,6 +4,7 @@ import be.abeel.util.Pair;
 import net.sf.javaml.classification.KNearestNeighbors;
 import net.sf.javaml.classification.evaluation.EvaluateDataset;
 import net.sf.javaml.classification.evaluation.PerformanceMeasure;
+import net.sf.javaml.classification.tree.RandomForest;
 import net.sf.javaml.core.Dataset;
 import net.sf.javaml.core.DefaultDataset;
 import net.sf.javaml.core.DenseInstance;
@@ -21,9 +22,9 @@ public class buildData {
 
     public static void buildFromRaw(String[] args) throws IOException {
         String basePath = "jmetal-problem/src/main/resources/classificationData/";
-        int featuresNumber = 649;
-        int instanceNumber = 2000;
-        String dataName = "MultipleFeatures";
+        int featuresNumber = 300;
+        int instanceNumber = 27965;
+        String dataName = "GFE";
         Dataset data = FileHandler.loadDataset(new File(basePath + dataName + "/data.dat"),0,",");
 //        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/madelon_valid.data")));
 //        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xac.dat"),18," "));
@@ -35,17 +36,17 @@ public class buildData {
 //        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xai.dat"),18," "));
 
         // pre process data
-//        for (Instance ins : data){
-//            ins.removeAttribute(0);
-//            ins.removeAttribute(0);
-//        }
-        for (Instance ins : data) {
-            for (int i = 0; i < featuresNumber; i++){
-                if (ins.get(i).isNaN()){
-                    ins.put(i, 0.0);
-                }
-            }
+        for (Instance ins : data){
+            ins.removeAttribute(0);
+            ins.removeAttribute(0);
         }
+//        for (Instance ins : data) {
+//            for (int i = 0; i < featuresNumber; i++){
+//                if (ins.get(i).isNaN()){
+//                    ins.put(i, 0.0);
+//                }
+//            }
+//        }
 
 
 
@@ -61,6 +62,10 @@ public class buildData {
         // calculate the total error rate
         KNearestNeighbors knn = new KNearestNeighbors(5);
         knn.buildClassifier(dataTrain);
+
+//        RandomForest rf = new RandomForest(5);
+//        rf.buildClassifier(dataTrain);
+
         int wrong = 0;
         /* Classify all instances and check with the correct class values */
         for (Instance inst : dataTest) {

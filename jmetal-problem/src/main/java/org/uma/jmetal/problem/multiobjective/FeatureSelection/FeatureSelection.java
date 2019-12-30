@@ -5,6 +5,7 @@ import net.sf.javaml.classification.Classifier;
 import net.sf.javaml.classification.KNearestNeighbors;
 import net.sf.javaml.classification.evaluation.EvaluateDataset;
 import net.sf.javaml.classification.evaluation.PerformanceMeasure;
+import net.sf.javaml.classification.tree.RandomForest;
 import net.sf.javaml.core.Dataset;
 import net.sf.javaml.core.DefaultDataset;
 import net.sf.javaml.core.DenseInstance;
@@ -69,8 +70,9 @@ public abstract class FeatureSelection extends AbstractDoubleProblem {
             Dataset newDataTrain = getSelectedFeatureData(solution, dataTrain);
             Dataset newDataTest = getSelectedFeatureData(solution, dataTest);
 
-//            Classifier svm = new SelfOptimizingLinearLibSVM();
-//            svm.buildClassifier(newDataTrain);
+//            RandomForest rf = new RandomForest(5);
+//            rf.buildClassifier(dataTrain);
+
             KNearestNeighbors knn = new KNearestNeighbors(5);
             knn.buildClassifier(newDataTrain);
 

@@ -76,21 +76,8 @@ public class ParallelismTest {
         problem = (DoubleProblem) ProblemUtils.<DoubleSolution> loadProblem(problemName);
 
         // generate different solutions
-        long[][] computationTimeList = new long[problem.getNumberOfVariables()][10];
-        for (int featureNum = 1; featureNum <= problem.getNumberOfVariables(); featureNum++){
-            JMetalLogger.logger.info(problemName + " start calculation featureNum:" + featureNum);
-            List<DoubleSolution> solutionList = getSolutionList(problem, featureNum,10);
-            int solutionIndex = 0;
-            for (DoubleSolution solution : solutionList){
-                long computationTime = System.currentTimeMillis();
-                problem.evaluate(solution);
-                computationTime = System.currentTimeMillis() - computationTime;
-                computationTimeList[featureNum-1][solutionIndex++] = computationTime;
-            }
-        }
-//        long[][] computationTimeList = new long[problem.getNumberOfVariables() / 50 + 1][10];
-//        for (int featureNum = 1; featureNum <= problem.getNumberOfVariables(); featureNum+=50){
-//            int fn = featureNum / 50;
+//        long[][] computationTimeList = new long[problem.getNumberOfVariables()][10];
+//        for (int featureNum = 1; featureNum <= problem.getNumberOfVariables(); featureNum++){
 //            JMetalLogger.logger.info(problemName + " start calculation featureNum:" + featureNum);
 //            List<DoubleSolution> solutionList = getSolutionList(problem, featureNum,10);
 //            int solutionIndex = 0;
@@ -98,9 +85,22 @@ public class ParallelismTest {
 //                long computationTime = System.currentTimeMillis();
 //                problem.evaluate(solution);
 //                computationTime = System.currentTimeMillis() - computationTime;
-//                computationTimeList[fn][solutionIndex++] = computationTime;
+//                computationTimeList[featureNum-1][solutionIndex++] = computationTime;
 //            }
 //        }
+        long[][] computationTimeList = new long[problem.getNumberOfVariables() / 50 + 1][10];
+        for (int featureNum = 1; featureNum <= problem.getNumberOfVariables(); featureNum+=50){
+            int fn = featureNum / 50;
+            JMetalLogger.logger.info(problemName + " start calculation featureNum:" + featureNum);
+            List<DoubleSolution> solutionList = getSolutionList(problem, featureNum,10);
+            int solutionIndex = 0;
+            for (DoubleSolution solution : solutionList){
+                long computationTime = System.currentTimeMillis();
+                problem.evaluate(solution);
+                computationTime = System.currentTimeMillis() - computationTime;
+                computationTimeList[fn][solutionIndex++] = computationTime;
+            }
+        }
 
         String outputStr = "";
         for (int featureNum = 0; featureNum < computationTimeList.length; featureNum++){
