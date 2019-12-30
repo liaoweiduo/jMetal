@@ -316,6 +316,16 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 			} else if (subPopulationNum == 16) {
 				featureNumAssign = new int[]{48, 21, 16, 13, 11, 10, 10, 10, 9, 9, 8, 8, 7, 7, 7, 6};
 			}
+		} else if (problem.getName().equals("MultipleFeatures")){
+			if (subPopulationNum == 1) {
+				featureNumAssign = new int[]{200};
+			} else if (subPopulationNum == 2){
+				featureNumAssign = new int[]{};
+			} else if (subPopulationNum == 4) {
+				featureNumAssign = new int[]{};
+			} else if (subPopulationNum == 8) {
+				featureNumAssign = new int[]{};
+			}
 		}
 
 		sum = featureNumAssign[0]; int assignedIslandIndex = 0;

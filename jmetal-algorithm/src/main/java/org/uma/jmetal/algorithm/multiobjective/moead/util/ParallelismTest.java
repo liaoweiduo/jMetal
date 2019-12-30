@@ -85,7 +85,7 @@ public class ParallelismTest {
                 long computationTime = System.currentTimeMillis();
                 problem.evaluate(solution);
                 computationTime = System.currentTimeMillis() - computationTime;
-                computationTimeList[featureNum][solutionIndex++] = computationTime;
+                computationTimeList[featureNum-1][solutionIndex++] = computationTime;
             }
         }
 //        long[][] computationTimeList = new long[problem.getNumberOfVariables() / 50 + 1][10];
