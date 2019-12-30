@@ -22,10 +22,10 @@ public class buildData {
 
     public static void buildFromRaw(String[] args) throws IOException {
         String basePath = "jmetal-problem/src/main/resources/classificationData/";
-        int featuresNumber = 300;
-        int instanceNumber = 27965;
-        String dataName = "GFE";
-        Dataset data = FileHandler.loadDataset(new File(basePath + dataName + "/data.dat"),0,",");
+        int featuresNumber = 178;
+        int instanceNumber = 11500;
+        String dataName = "ESR";
+        Dataset data = FileHandler.loadDataset(new File(basePath + dataName + "/data.csv"),179,",");
 //        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/madelon_valid.data")));
 //        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xac.dat"),18," "));
 //        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xad.dat"),18," "));
@@ -36,9 +36,10 @@ public class buildData {
 //        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xai.dat"),18," "));
 
         // pre process data
+        data.remove(0);
         for (Instance ins : data){
             ins.removeAttribute(0);
-            ins.removeAttribute(0);
+//            ins.removeAttribute(0);
         }
 //        for (Instance ins : data) {
 //            for (int i = 0; i < featuresNumber; i++){
