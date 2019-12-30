@@ -128,7 +128,7 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 			subProcessState[subPopulationIndex] = executorService.submit(subProcess);
 		}
 		executorService.shutdown();
-		while(!executorService.isTerminated());
+//		while(!executorService.isTerminated());
 
 		// check sub process state.
 		for (int subProcessIndex = 0; subProcessIndex < subPopulationNum; subProcessIndex ++){
