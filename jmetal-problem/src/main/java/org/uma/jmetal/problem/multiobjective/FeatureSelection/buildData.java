@@ -22,10 +22,10 @@ public class buildData {
 
     public static void buildFromRaw(String[] args) throws IOException {
         String basePath = "jmetal-problem/src/main/resources/classificationData/";
-        int featuresNumber = 178;
-        int instanceNumber = 11500;
-        String dataName = "ESR";
-        Dataset data = FileHandler.loadDataset(new File(basePath + dataName + "/data.csv"),179,",");
+        int featuresNumber = 96;
+        int instanceNumber = 3942;
+        String dataName = "C2K";
+        Dataset data = FileHandler.loadDataset(new File(basePath + dataName + "/c2k_data_comma.csv"),97,",");
 //        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/madelon_valid.data")));
 //        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xac.dat"),18," "));
 //        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xad.dat"),18," "));
@@ -36,18 +36,17 @@ public class buildData {
 //        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xai.dat"),18," "));
 
         // pre process data
-        data.remove(0);
-        for (Instance ins : data){
+        data.remove(0);     //第一行不要
+        for (Instance ins : data){  //第一列不要
             ins.removeAttribute(0);
-//            ins.removeAttribute(0);
         }
-//        for (Instance ins : data) {
-//            for (int i = 0; i < featuresNumber; i++){
-//                if (ins.get(i).isNaN()){
-//                    ins.put(i, 0.0);
-//                }
-//            }
-//        }
+        for (Instance ins : data) {
+            for (int i = 0; i < featuresNumber; i++){
+                if (ins.get(i).isNaN()){
+                    ins.put(i, 0.0);
+                }
+            }
+        }
 
 
 
