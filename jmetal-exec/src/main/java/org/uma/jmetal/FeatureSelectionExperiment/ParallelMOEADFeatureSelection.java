@@ -192,7 +192,7 @@ public class ParallelMOEADFeatureSelection {
                     .setPopulationSize(populationSize)
                     .setResultPopulationSize(populationSize)
                     .setNeighborhoodSelectionProbability(0.85)
-                    .setMaximumNumberOfReplacedSolutions(Math.max(populationSize / 10, 4))
+                    .setMaximumNumberOfReplacedSolutions(1)   //Math.max(populationSize / 10, 4)
                     .setNeighborSize(Math.max(populationSize / 10, 4))
                     .setNumberOfThreads(NUM_SUBPOPULATION) // number of core
                     .setOverlappingSize(Math.max(populationSize / 10, 4) / 2)
