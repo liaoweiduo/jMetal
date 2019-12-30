@@ -141,7 +141,7 @@ public class ParallelMOEADFeatureSelection {
                             new InvertedGenerationalDistance<DoubleSolution>(),
                             new InvertedGenerationalDistancePlus<DoubleSolution>()))
                     .setIndependentRuns(RUN_TO-RUN_FROM+1)
-                    .setNumberOfCores(1)
+                    .setNumberOfCores(5)
                     .build();
 
     new ExecuteAlgorithms<>(experiment).run();
@@ -192,7 +192,7 @@ public class ParallelMOEADFeatureSelection {
                     .setPopulationSize(populationSize)
                     .setResultPopulationSize(populationSize)
                     .setNeighborhoodSelectionProbability(0.85)
-                    .setMaximumNumberOfReplacedSolutions(1)   //Math.max(populationSize / 10, 4)
+                    .setMaximumNumberOfReplacedSolutions(Math.max(populationSize / 10, 4))   //
                     .setNeighborSize(Math.max(populationSize / 10, 4))
                     .setNumberOfThreads(NUM_SUBPOPULATION) // number of core
                     .setOverlappingSize(Math.max(populationSize / 10, 4) / 2)
