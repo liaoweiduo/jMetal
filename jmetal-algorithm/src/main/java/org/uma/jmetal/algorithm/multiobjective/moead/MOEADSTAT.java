@@ -80,17 +80,17 @@ public class MOEADSTAT extends AbstractMOEAD<DoubleSolution> {
 				updateNeighborhood(child, subProblemId, neighborType);
 			}
 
-//			//check for the same one in the population before evaluating
-//			//the solution with large nref add random feature to nref
-//			List<Integer> indexToAdd = checkForDuplicate();
-//			//System.out.println("Re-initializing "+indexToRandom.size());
-//			for(int index: indexToAdd){
-//				DoubleSolution sol = this.population.get(index);
-//				double refRate = this.refPoints[index];
-//				((FeatureSelection)this.problem).increaseSize(sol, refRate);
-//				this.problem.evaluate(sol);
-//				evaluations++;
-//			}
+			//check for the same one in the population before evaluating
+			//the solution with large nref add random feature to nref
+			List<Integer> indexToAdd = checkForDuplicate();
+			//System.out.println("Re-initializing "+indexToRandom.size());
+			for(int index: indexToAdd){
+				DoubleSolution sol = this.population.get(index);
+				double refRate = this.refPoints[index];
+				((FeatureSelection)this.problem).increaseSize(sol, refRate);
+				this.problem.evaluate(sol);
+				evaluations++;
+			}
 
 //			updateExternalPopulation();
 			iterations++;
