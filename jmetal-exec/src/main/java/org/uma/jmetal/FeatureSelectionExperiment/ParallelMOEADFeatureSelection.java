@@ -69,9 +69,9 @@ public class ParallelMOEADFeatureSelection {
         RUN_TO = Integer.parseInt(args[1]);
 
         if (args.length > 2) {
-            NUM_SUBPOPULATION = Integer.parseInt(args[2]);
+            PROBLEM = args[2];
             if (args.length > 3) {
-                PROBLEM = args[3];
+                NUM_SUBPOPULATION = Integer.parseInt(args[3]);
             }
             if (args.length > 4) {
                 ALGORITHM = args[4];
