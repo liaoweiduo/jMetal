@@ -22,10 +22,10 @@ public class buildData {
 
     public static void buildFromRaw(String[] args) throws IOException {
         String basePath = "jmetal-problem/src/main/resources/classificationData/";
-        int featuresNumber = 96;
-        int instanceNumber = 3942;
-        String dataName = "C2K";
-        Dataset data = FileHandler.loadDataset(new File(basePath + dataName + "/c2k_data_comma.csv"),97,",");
+        int featuresNumber = 22;
+        int instanceNumber = 7195;
+        String dataName = "MFCC";
+        Dataset data = FileHandler.loadDataset(new File(basePath + dataName + "/Frogs_MFCCs.csv"),24,",");
 //        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/madelon_valid.data")));
 //        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xac.dat"),18," "));
 //        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xad.dat"),18," "));
@@ -37,8 +37,10 @@ public class buildData {
 
         // pre process data
         data.remove(0);     //第一行不要
-        for (Instance ins : data){  //第一列不要
-            ins.removeAttribute(0);
+        for (Instance ins : data){  // 最后三列不要
+            ins.removeAttribute(24);
+            ins.removeAttribute(23);
+            ins.removeAttribute(22);
         }
         for (Instance ins : data) {
             for (int i = 0; i < featuresNumber; i++){

@@ -322,19 +322,19 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 			} else if (subPopulationNum == 2){
 				featureNumAssign = new int[]{123,55};
 			} else if (subPopulationNum == 4) {
-				featureNumAssign = new int[]{};
+				featureNumAssign = new int[]{85,38,29,26};
 			} else if (subPopulationNum == 8) {
-				featureNumAssign = new int[]{};
+				featureNumAssign = new int[]{58,27,20,17,16,15,13,12};
 			}
 		} else if (problem.getName().equals("MultipleFeatures")){
 			if (subPopulationNum == 1) {
-				featureNumAssign = new int[]{96};
+				featureNumAssign = new int[]{200};
 			} else if (subPopulationNum == 2){
-				featureNumAssign = new int[]{65,31};
+				featureNumAssign = new int[]{139,61};
 			} else if (subPopulationNum == 4) {
-				featureNumAssign = new int[]{41,24,17,14};
+				featureNumAssign = new int[]{97,42,32,29};
 			} else if (subPopulationNum == 8) {
-				featureNumAssign = new int[]{24,13,12,11,10,9,9,8};
+				featureNumAssign = new int[]{66,30,23,19,18,16,14,14};
 			}
 		} else if (problem.getName().equals("C2K")){
 			if (subPopulationNum == 1) {
