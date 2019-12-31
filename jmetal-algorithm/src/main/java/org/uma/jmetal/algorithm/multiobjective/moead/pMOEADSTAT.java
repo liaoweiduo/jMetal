@@ -115,7 +115,7 @@ public class pMOEADSTAT extends MOEADSTAT {
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
-		return "pMOEAD-STAT";
+		return "pMOEAD-STAT-" + processorNumber;
 	}
 	@Override
 	public String getDescription() {
