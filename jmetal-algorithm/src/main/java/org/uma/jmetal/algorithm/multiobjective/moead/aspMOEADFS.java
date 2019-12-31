@@ -226,126 +226,149 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 		featureNumAssign[subPopulationNum - 1] = populationSize - sum;
 
 		// manually tune featureNumAssign;
-		if (problem.getName().equals("Australian")){
-			if (subPopulationNum == 1) {
-				featureNumAssign = new int[]{14};
-			} else if (subPopulationNum == 2) {
-				featureNumAssign = new int[]{7, 7};
-			} else if (subPopulationNum == 4) {
-				featureNumAssign = new int[]{3, 4, 3, 4};
-			} else if (subPopulationNum == 8) {
-				featureNumAssign = new int[]{1, 2, 1, 2, 2, 2, 2, 2};
-			}
-		} else if (problem.getName().equals("Vehicle")) {
-			if (subPopulationNum == 1) {
-				featureNumAssign = new int[]{18};
-			} else if (subPopulationNum == 2) {
-				featureNumAssign = new int[]{11, 7};
-			} else if (subPopulationNum == 4) {
-				featureNumAssign = new int[]{8, 5, 3, 2};
-			} else if (subPopulationNum == 8) {
-				featureNumAssign = new int[]{3, 3, 2, 2, 2, 2, 2, 2};
-			} else if (subPopulationNum == 16) {
-				featureNumAssign = new int[]{2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-			}
-		} else if (problem.getName().equals("Sonar")) {
-			if (subPopulationNum == 1) {
-				featureNumAssign = new int[]{60};
-			} else if (subPopulationNum == 2) {
-				featureNumAssign = new int[]{36, 24};
-			} else if (subPopulationNum == 4) {
-				featureNumAssign = new int[]{23, 14, 13, 10};
-			} else if (subPopulationNum == 8) {
-				featureNumAssign = new int[]{9, 13, 8, 6, 5, 5, 7, 7};
-			}
-		} else if (problem.getName().equals("Hillvalley")){
-			if (subPopulationNum == 1) {
-				featureNumAssign = new int[]{100};
-			} else if (subPopulationNum == 2) {
-				featureNumAssign = new int[]{59, 41};
-			} else if (subPopulationNum == 4) {
-				featureNumAssign = new int[]{40, 24, 19, 17};
-			} else if (subPopulationNum == 8) {
-				featureNumAssign = new int[]{28, 16, 12, 11, 10, 9, 8, 6};
-			} else if (subPopulationNum == 16) {
-				featureNumAssign = new int[]{17,11,8,7,6,6,6,5,5,5,5,4,4,4,4,3};
-			}
-		} else if (problem.getName().equals("Musk1")){
-			if (subPopulationNum == 1) {
-				featureNumAssign = new int[]{166};
-			} else if (subPopulationNum == 2) {
-				featureNumAssign = new int[]{105,61};
-			} else if (subPopulationNum == 4) {
-				featureNumAssign = new int[]{71, 36, 30, 29};
-			} else if (subPopulationNum == 8) {
-				featureNumAssign = new int[]{40, 22, 20, 19, 18, 17, 15, 15};
-			} else if (subPopulationNum == 16) {
-				featureNumAssign = new int[]{32, 17, 13, 12, 11, 10, 9, 8, 7, 7, 7, 7, 7, 7, 6, 6};
-			}
-		} else if (problem.getName().equals("Arrhythmia")){
-			if (subPopulationNum == 1) {
-				featureNumAssign = new int[]{200};
-			} else if (subPopulationNum == 2) {
-				featureNumAssign = new int[]{130, 70};
-			} else if (subPopulationNum == 4) {
-				featureNumAssign = new int[]{81, 45, 38, 36};
-			} else if (subPopulationNum == 8) {
-				featureNumAssign = new int[]{51, 29, 23, 22, 20, 19, 18, 18};
-			}
-		}  else if (problem.getName().equals("Madelon")){
-			if (subPopulationNum == 1) {
-				featureNumAssign = new int[]{200};
-			} else if (subPopulationNum == 2) {
-				featureNumAssign = new int[]{120, 80};
-			} else if (subPopulationNum == 4) {
-				featureNumAssign = new int[]{72, 45, 43, 40};
-			} else if (subPopulationNum == 8) {
-				featureNumAssign = new int[]{48, 29, 22, 22, 21, 20, 19, 19};
-			} else if (subPopulationNum == 16) {
-				featureNumAssign = new int[]{47, 20, 16, 13, 12, 10, 10, 10, 9, 9, 8, 8, 8, 7, 7, 6};
-			}
-		} else if (problem.getName().equals("Isolet")){
-			if (subPopulationNum == 1) {
-				featureNumAssign = new int[]{200};
-			} else if (subPopulationNum == 2){
-				featureNumAssign = new int[]{141,59};
-			} else if (subPopulationNum == 4) {
-				featureNumAssign = new int[]{100, 41, 31, 28};
-			} else if (subPopulationNum == 8) {
-				featureNumAssign = new int[]{70, 29, 23, 19, 17, 15, 14, 13};
-			} else if (subPopulationNum == 16) {
-				featureNumAssign = new int[]{48, 21, 16, 13, 11, 10, 10, 10, 9, 9, 8, 8, 7, 7, 7, 6};
-			}
-		} else if (problem.getName().equals("ESR")){
-			if (subPopulationNum == 1) {
-				featureNumAssign = new int[]{178};
-			} else if (subPopulationNum == 2){
-				featureNumAssign = new int[]{123,55};
-			} else if (subPopulationNum == 4) {
-				featureNumAssign = new int[]{85,38,29,26};
-			} else if (subPopulationNum == 8) {
-				featureNumAssign = new int[]{58,27,20,17,16,15,13,12};
-			}
-		} else if (problem.getName().equals("MultipleFeatures")){
-			if (subPopulationNum == 1) {
-				featureNumAssign = new int[]{200};
-			} else if (subPopulationNum == 2){
-				featureNumAssign = new int[]{139,61};
-			} else if (subPopulationNum == 4) {
-				featureNumAssign = new int[]{97,42,32,29};
-			} else if (subPopulationNum == 8) {
-				featureNumAssign = new int[]{66,30,23,19,18,16,14,14};
-			}
-		} else if (problem.getName().equals("C2K")){
-			if (subPopulationNum == 1) {
-				featureNumAssign = new int[]{96};
-			} else if (subPopulationNum == 2){
-				featureNumAssign = new int[]{65,31};
-			} else if (subPopulationNum == 4) {
-				featureNumAssign = new int[]{41,24,17,14};
-			} else if (subPopulationNum == 8) {
-				featureNumAssign = new int[]{26,14,13,10,9,8,8,8};
-			}
+		switch (problem.getName()) {
+			case "Australian":
+				if (subPopulationNum == 1) {
+					featureNumAssign = new int[]{14};
+				} else if (subPopulationNum == 2) {
+					featureNumAssign = new int[]{7, 7};
+				} else if (subPopulationNum == 4) {
+					featureNumAssign = new int[]{3, 4, 3, 4};
+				} else if (subPopulationNum == 8) {
+					featureNumAssign = new int[]{1, 2, 1, 2, 2, 2, 2, 2};
+				}
+				break;
+			case "Vehicle":
+				if (subPopulationNum == 1) {
+					featureNumAssign = new int[]{18};
+				} else if (subPopulationNum == 2) {
+					featureNumAssign = new int[]{11, 7};
+				} else if (subPopulationNum == 4) {
+					featureNumAssign = new int[]{8, 5, 3, 2};
+				} else if (subPopulationNum == 8) {
+					featureNumAssign = new int[]{3, 3, 2, 2, 2, 2, 2, 2};
+				} else if (subPopulationNum == 16) {
+					featureNumAssign = new int[]{2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+				}
+				break;
+			case "Sonar":
+				if (subPopulationNum == 1) {
+					featureNumAssign = new int[]{60};
+				} else if (subPopulationNum == 2) {
+					featureNumAssign = new int[]{36, 24};
+				} else if (subPopulationNum == 4) {
+					featureNumAssign = new int[]{23, 14, 13, 10};
+				} else if (subPopulationNum == 8) {
+					featureNumAssign = new int[]{9, 13, 8, 6, 5, 5, 7, 7};
+				}
+				break;
+			case "Hillvalley":
+				if (subPopulationNum == 1) {
+					featureNumAssign = new int[]{100};
+				} else if (subPopulationNum == 2) {
+					featureNumAssign = new int[]{59, 41};
+				} else if (subPopulationNum == 4) {
+					featureNumAssign = new int[]{40, 24, 19, 17};
+				} else if (subPopulationNum == 8) {
+					featureNumAssign = new int[]{28, 16, 12, 11, 10, 9, 8, 6};
+				} else if (subPopulationNum == 16) {
+					featureNumAssign = new int[]{17, 11, 8, 7, 6, 6, 6, 5, 5, 5, 5, 4, 4, 4, 4, 3};
+				}
+				break;
+			case "Musk1":
+				if (subPopulationNum == 1) {
+					featureNumAssign = new int[]{166};
+				} else if (subPopulationNum == 2) {
+					featureNumAssign = new int[]{105, 61};
+				} else if (subPopulationNum == 4) {
+					featureNumAssign = new int[]{71, 36, 30, 29};
+				} else if (subPopulationNum == 8) {
+					featureNumAssign = new int[]{40, 22, 20, 19, 18, 17, 15, 15};
+				} else if (subPopulationNum == 16) {
+					featureNumAssign = new int[]{32, 17, 13, 12, 11, 10, 9, 8, 7, 7, 7, 7, 7, 7, 6, 6};
+				}
+				break;
+			case "Arrhythmia":
+				if (subPopulationNum == 1) {
+					featureNumAssign = new int[]{200};
+				} else if (subPopulationNum == 2) {
+					featureNumAssign = new int[]{130, 70};
+				} else if (subPopulationNum == 4) {
+					featureNumAssign = new int[]{81, 45, 38, 36};
+				} else if (subPopulationNum == 8) {
+					featureNumAssign = new int[]{51, 29, 23, 22, 20, 19, 18, 18};
+				}
+				break;
+			case "Madelon":
+				if (subPopulationNum == 1) {
+					featureNumAssign = new int[]{200};
+				} else if (subPopulationNum == 2) {
+					featureNumAssign = new int[]{120, 80};
+				} else if (subPopulationNum == 4) {
+					featureNumAssign = new int[]{72, 45, 43, 40};
+				} else if (subPopulationNum == 8) {
+					featureNumAssign = new int[]{48, 29, 22, 22, 21, 20, 19, 19};
+				} else if (subPopulationNum == 16) {
+					featureNumAssign = new int[]{47, 20, 16, 13, 12, 10, 10, 10, 9, 9, 8, 8, 8, 7, 7, 6};
+				}
+				break;
+			case "Isolet":
+				if (subPopulationNum == 1) {
+					featureNumAssign = new int[]{200};
+				} else if (subPopulationNum == 2) {
+					featureNumAssign = new int[]{141, 59};
+				} else if (subPopulationNum == 4) {
+					featureNumAssign = new int[]{100, 41, 31, 28};
+				} else if (subPopulationNum == 8) {
+					featureNumAssign = new int[]{70, 29, 23, 19, 17, 15, 14, 13};
+				} else if (subPopulationNum == 16) {
+					featureNumAssign = new int[]{48, 21, 16, 13, 11, 10, 10, 10, 9, 9, 8, 8, 7, 7, 7, 6};
+				}
+				break;
+			case "ESR":
+				if (subPopulationNum == 1) {
+					featureNumAssign = new int[]{178};
+				} else if (subPopulationNum == 2) {
+					featureNumAssign = new int[]{123, 55};
+				} else if (subPopulationNum == 4) {
+					featureNumAssign = new int[]{85, 38, 29, 26};
+				} else if (subPopulationNum == 8) {
+					featureNumAssign = new int[]{58, 27, 20, 17, 16, 15, 13, 12};
+				}
+				break;
+			case "MultipleFeatures":
+				if (subPopulationNum == 1) {
+					featureNumAssign = new int[]{200};
+				} else if (subPopulationNum == 2) {
+					featureNumAssign = new int[]{139, 61};
+				} else if (subPopulationNum == 4) {
+					featureNumAssign = new int[]{97, 42, 32, 29};
+				} else if (subPopulationNum == 8) {
+					featureNumAssign = new int[]{66, 30, 23, 19, 18, 16, 14, 14};
+				}
+				break;
+			case "C2K":
+				if (subPopulationNum == 1) {
+					featureNumAssign = new int[]{96};
+				} else if (subPopulationNum == 2) {
+					featureNumAssign = new int[]{65, 31};
+				} else if (subPopulationNum == 4) {
+					featureNumAssign = new int[]{41, 24, 17, 14};
+				} else if (subPopulationNum == 8) {
+					featureNumAssign = new int[]{26, 14, 13, 10, 9, 8, 8, 8};
+				}
+				break;
+			case "MFCC":
+				if (subPopulationNum == 1) {
+					featureNumAssign = new int[]{22};
+				} else if (subPopulationNum == 2) {
+					featureNumAssign = new int[]{13, 9};
+				} else if (subPopulationNum == 4) {
+					featureNumAssign = new int[]{8, 5, 5, 4};
+				} else if (subPopulationNum == 8) {
+					featureNumAssign = new int[]{4, 4, 3, 3, 2, 2, 2, 2};
+				}
+				break;
 		}
 
 		sum = featureNumAssign[0]; int assignedIslandIndex = 0;
