@@ -333,7 +333,7 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 				} else if (subPopulationNum == 4) {
 					featureNumAssign = new int[]{85, 38, 29, 26};
 				} else if (subPopulationNum == 8) {
-					featureNumAssign = new int[]{58, 27, 20, 17, 16, 15, 13, 12};
+					featureNumAssign = new int[]{59,28,21,17,15,14,12,12};
 				}
 				break;
 			case "MultipleFeatures":
@@ -344,7 +344,7 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 				} else if (subPopulationNum == 4) {
 					featureNumAssign = new int[]{97, 42, 32, 29};
 				} else if (subPopulationNum == 8) {
-					featureNumAssign = new int[]{66, 30, 23, 19, 18, 16, 14, 14};
+					featureNumAssign = new int[]{68,31,24,19,17,15,13,13};
 				}
 				break;
 			case "C2K":
@@ -355,7 +355,8 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 				} else if (subPopulationNum == 4) {
 					featureNumAssign = new int[]{41, 24, 17, 14};
 				} else if (subPopulationNum == 8) {
-					featureNumAssign = new int[]{26, 14, 13, 10, 9, 8, 8, 8};
+					featureNumAssign = new int[]{28,15,14,11,9,7,6,6};
+
 				}
 				break;
 			case "MFCC":
@@ -366,7 +367,7 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 				} else if (subPopulationNum == 4) {
 					featureNumAssign = new int[]{8, 5, 5, 4};
 				} else if (subPopulationNum == 8) {
-					featureNumAssign = new int[]{4, 4, 3, 3, 2, 2, 2, 2};
+					featureNumAssign = new int[]{5, 4, 3, 2, 2, 2, 2, 2};
 				}
 				break;
 		}
