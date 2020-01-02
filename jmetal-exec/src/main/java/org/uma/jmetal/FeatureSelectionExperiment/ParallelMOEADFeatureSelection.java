@@ -116,8 +116,14 @@ public class ParallelMOEADFeatureSelection {
           case "MultipleFeatures":
               problemList.add(new ExperimentProblem<>(new MultipleFeatures()));
               break;
+          case "ESR":
+              problemList.add(new ExperimentProblem<>(new ESR()));
+              break;
           case "C2K":
               problemList.add(new ExperimentProblem<>(new C2K()));
+              break;
+          case "MFCC":
+              problemList.add(new ExperimentProblem<>(new MFCC()));
               break;
       }
 
