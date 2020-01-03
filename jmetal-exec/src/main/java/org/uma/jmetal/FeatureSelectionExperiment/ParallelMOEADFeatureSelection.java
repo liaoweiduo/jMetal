@@ -90,6 +90,8 @@ public class ParallelMOEADFeatureSelection {
 //      problemList.add(new ExperimentProblem<>(new Musk1()));
 //      problemList.add(new ExperimentProblem<>(new Isolet()));
 //      problemList.add(new ExperimentProblem<>(new MultipleFeatures()));
+//      problemList.add(new ExperimentProblem<>(new C2K()));
+//      problemList.add(new ExperimentProblem<>(new MFCC()));
       switch (PROBLEM) {
           case "Australian":
               problemList.add(new ExperimentProblem<>(new Australian()));
@@ -152,9 +154,9 @@ public class ParallelMOEADFeatureSelection {
                     .setNumberOfCores(2)
                     .build();
 
-    new ExecuteAlgorithms<>(experiment).run();
-//    new ComputeQualityIndicators<>(experiment).run();
-//    new GenerateLatexTablesWithStatistics(experiment).run();
+//    new ExecuteAlgorithms<>(experiment).run();
+    new ComputeQualityIndicators<>(experiment).run();
+    new GenerateLatexTablesWithStatistics(experiment).run();
 //    new GenerateWilcoxonTestTablesWithR<>(experiment).run();
 //    new GenerateFriedmanTestTables<>(experiment).run();
 //    new GenerateBoxplotsWithR<>(experiment).setRows(3).setColumns(3).setDisplayNotch().run();
