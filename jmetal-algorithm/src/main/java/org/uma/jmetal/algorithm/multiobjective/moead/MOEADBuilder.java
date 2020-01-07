@@ -248,12 +248,11 @@ public class MOEADBuilder implements AlgorithmBuilder<AbstractMOEAD<DoubleSoluti
       algorithm = new ffpMOEADFS(problem, populationSize, resultPopulationSize, maxEvaluations, crossover, mutation,
               functionType, dataDirectory, neighborhoodSelectionProbability,
               maximumNumberOfReplacedSolutions, neighborSize, numberOfThreads);
+    } else if (moeadVariant.equals(Variant.sfpMOEADFS)) {
+      algorithm = new sfpMOEADFS(problem, populationSize, resultPopulationSize, maxEvaluations, crossover, mutation,
+              functionType, dataDirectory, neighborhoodSelectionProbability,
+              maximumNumberOfReplacedSolutions, neighborSize, numberOfThreads);
     }
-//    else if (moeadVariant.equals(Variant.sfpMOEADFS)) {
-//      algorithm = new sfpMOEADFS(problem, populationSize, resultPopulationSize, maxEvaluations, crossover, mutation,
-//              functionType, dataDirectory, neighborhoodSelectionProbability,
-//              maximumNumberOfReplacedSolutions, neighborSize, numberOfThreads);
-//    }
     return algorithm ;
   }
 }
