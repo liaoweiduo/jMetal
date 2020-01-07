@@ -53,6 +53,7 @@ public class ParallelMOEADFeatureSelection {
   private static int NUM_SUBPOPULATION = 2;
   private static String ALGORITHM = "STAT";
   private static String PROBLEM = "Vehicle";
+  private static String MODE = "multiple";  // "single"
   private static final String CLASS_NAME = new Object() {
     public String getClassName() {
       String clazzName = this.getClass().getName();
@@ -73,10 +74,13 @@ public class ParallelMOEADFeatureSelection {
         if (args.length > 2) {
             PROBLEM = args[2];
             if (args.length > 3) {
-                NUM_SUBPOPULATION = Integer.parseInt(args[3]);
+                MODE = args[3];
             }
             if (args.length > 4) {
-                ALGORITHM = args[4];
+                NUM_SUBPOPULATION = Integer.parseInt(args[4]);
+            }
+            if (args.length > 5) {
+                ALGORITHM = args[5];
             }
         }
     }
@@ -130,10 +134,13 @@ public class ParallelMOEADFeatureSelection {
               problemList.add(new ExperimentProblem<>(new MFCC()));
               break;
       }
-
-    List<ExperimentAlgorithm<DoubleSolution, List<DoubleSolution>>> algorithmList =
-//            configureAlgorithmListForData(problemList);
-      configureAlgorithmListForIndicator(problemList);
+      List<ExperimentAlgorithm<DoubleSolution, List<DoubleSolution>>> algorithmList = new ArrayList<>();
+      if (MODE.equals("single")) {
+          algorithmList = configureAlgorithmListForData(problemList);
+      }
+      else if (MODE.equals("multiple")){
+          algorithmList = configureAlgorithmListForIndicator(problemList);
+      }
 
     Experiment<DoubleSolution, List<DoubleSolution>> experiment =
             new ExperimentBuilder<DoubleSolution, List<DoubleSolution>>(CLASS_NAME)

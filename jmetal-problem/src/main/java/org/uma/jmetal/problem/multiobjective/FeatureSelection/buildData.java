@@ -22,10 +22,10 @@ public class buildData {
 
     public static void buildFromRaw(String[] args) throws IOException {
         String basePath = "jmetal-problem/src/main/resources/classificationData/";
-        int featuresNumber = 22;
-        int instanceNumber = 7195;
-        String dataName = "MFCC";
-        Dataset data = FileHandler.loadDataset(new File(basePath + dataName + "/Frogs_MFCCs.csv"),24,",");
+        int featuresNumber = 64;
+        int instanceNumber = 10572;
+        String dataName = "Bankruptcy";
+        Dataset data = FileHandler.loadDataset(new File(basePath + dataName + "/3year.arff"),64,",");
 //        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/madelon_valid.data")));
 //        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xac.dat"),18," "));
 //        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xad.dat"),18," "));
@@ -36,12 +36,19 @@ public class buildData {
 //        data.addAll(FileHandler.loadDataset(new File(basePath + dataName + "/xai.dat"),18," "));
 
         // pre process data
-        data.remove(0);     //第一行不要
-        for (Instance ins : data){  // 最后三列不要
-            ins.removeAttribute(24);
-            ins.removeAttribute(23);
-            ins.removeAttribute(22);
-        }
+
+//        data.remove(0);     //第一行不要
+
+//        for (int i = 0; i < 64;i++){    //前面不要
+//            data.remove(0);
+//        }
+
+//        for (Instance ins : data){  // 最后三列不要
+//            ins.removeAttribute(24);
+//            ins.removeAttribute(23);
+//            ins.removeAttribute(22);
+//        }
+
         for (Instance ins : data) {
             for (int i = 0; i < featuresNumber; i++){
                 if (ins.get(i).isNaN()){
