@@ -95,7 +95,7 @@ public abstract class FeatureSelection extends AbstractDoubleProblem {
      * @param solution the target solution
      * @return number of selected features
      */
-    private int getSelectedFeatureNumber(DoubleSolution solution){
+    public int getSelectedFeatureNumber(DoubleSolution solution){
         int numberOfSelectedFeature = 0;
         int numberOfVariables = getNumberOfVariables();
         for (int index = 0; index < numberOfVariables; index++){

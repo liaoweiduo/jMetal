@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.concurrent.*;
 
 public class pMOEADSTAT extends MOEADSTAT {
-	private int processorNumber;
+	protected int processorNumber;
 	protected ExecutorService executorService;
 
 	public pMOEADSTAT(Problem<DoubleSolution> problem,
@@ -123,7 +123,7 @@ public class pMOEADSTAT extends MOEADSTAT {
 		return "master-slave mode parallel implementation of MOEAD with multiple reference points";
 	}
 
-	private class evaluateRunable implements Runnable {
+	protected class evaluateRunable implements Runnable {
 		private int[] permutation;
 		private int populationIndex;
 
@@ -153,7 +153,7 @@ public class pMOEADSTAT extends MOEADSTAT {
 			updateNeighborhood(child, subProblemId, neighborType);
 		}
 	}
-	private class fixRunable implements Runnable {
+	protected class fixRunable implements Runnable {
 		private int index;
 
 		public fixRunable(int index) {

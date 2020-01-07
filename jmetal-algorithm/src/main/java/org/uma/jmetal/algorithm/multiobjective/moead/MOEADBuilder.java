@@ -16,7 +16,8 @@ import org.uma.jmetal.util.AlgorithmBuilder;
  */
 public class MOEADBuilder implements AlgorithmBuilder<AbstractMOEAD<DoubleSolution>> {
   public enum Variant {MOEAD, ConstraintMOEAD, MOEADDRA, MOEADSTM, MOEADD,
-    MOEADSTAT, pMOEADSTAT, oipMOEADFS, aspMOEADFS, rdpMOEADFS} ;
+    MOEADSTAT, oipMOEADFS, aspMOEADFS, rdpMOEADFS,
+    pMOEADSTAT,npMOEADFS, ffpMOEADFS, sfpMOEADFS} ;
 
   protected Problem<DoubleSolution> problem ;
 
@@ -222,11 +223,7 @@ public class MOEADBuilder implements AlgorithmBuilder<AbstractMOEAD<DoubleSoluti
       algorithm = new MOEADSTAT(problem, populationSize, resultPopulationSize, maxEvaluations, crossover, mutation,
               functionType, dataDirectory, neighborhoodSelectionProbability,
               maximumNumberOfReplacedSolutions, neighborSize);
-    } else if (moeadVariant.equals(Variant.pMOEADSTAT)) {
-      algorithm = new pMOEADSTAT(problem, populationSize, resultPopulationSize, maxEvaluations, crossover, mutation,
-              functionType, dataDirectory, neighborhoodSelectionProbability,
-              maximumNumberOfReplacedSolutions, neighborSize, numberOfThreads);
-    } else if (moeadVariant.equals(Variant.oipMOEADFS)) {
+    } else if (moeadVariant.equals(Variant.oipMOEADFS)) {     // island mode
       algorithm = new oipMOEADFS(problem,populationSize,resultPopulationSize,maxEvaluations,crossover, mutation,
               neighborhoodSelectionProbability, maximumNumberOfReplacedSolutions, neighborSize, numberOfThreads,
               overlappingSize, migrationRatio);
@@ -238,7 +235,25 @@ public class MOEADBuilder implements AlgorithmBuilder<AbstractMOEAD<DoubleSoluti
       algorithm = new rdpMOEADFS(problem,populationSize,resultPopulationSize,maxEvaluations,crossover,mutation,
               neighborhoodSelectionProbability, maximumNumberOfReplacedSolutions, neighborSize, numberOfThreads,
               overlappingSize, migrationRatio);
+    } else if (moeadVariant.equals(Variant.pMOEADSTAT)) {     // master-slave mode
+      algorithm = new pMOEADSTAT(problem, populationSize, resultPopulationSize, maxEvaluations, crossover, mutation,
+              functionType, dataDirectory, neighborhoodSelectionProbability,
+              maximumNumberOfReplacedSolutions, neighborSize, numberOfThreads);
+    } else if (moeadVariant.equals(Variant.npMOEADFS)) {
+      algorithm = new npMOEADFS(problem, populationSize, resultPopulationSize, maxEvaluations, crossover, mutation,
+              functionType, dataDirectory, neighborhoodSelectionProbability,
+              maximumNumberOfReplacedSolutions, neighborSize, numberOfThreads);
     }
+    else if (moeadVariant.equals(Variant.ffpMOEADFS)) {
+      algorithm = new ffpMOEADFS(problem, populationSize, resultPopulationSize, maxEvaluations, crossover, mutation,
+              functionType, dataDirectory, neighborhoodSelectionProbability,
+              maximumNumberOfReplacedSolutions, neighborSize, numberOfThreads);
+    }
+//    else if (moeadVariant.equals(Variant.sfpMOEADFS)) {
+//      algorithm = new sfpMOEADFS(problem, populationSize, resultPopulationSize, maxEvaluations, crossover, mutation,
+//              functionType, dataDirectory, neighborhoodSelectionProbability,
+//              maximumNumberOfReplacedSolutions, neighborSize, numberOfThreads);
+//    }
     return algorithm ;
   }
 }
