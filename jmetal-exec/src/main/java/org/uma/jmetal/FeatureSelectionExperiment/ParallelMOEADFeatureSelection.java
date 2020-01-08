@@ -158,7 +158,7 @@ public class ParallelMOEADFeatureSelection {
                             new InvertedGenerationalDistance<DoubleSolution>(),
                             new InvertedGenerationalDistancePlus<DoubleSolution>()))
                     .setIndependentRuns(RUN_TO-RUN_FROM+1)
-                    .setNumberOfCores(2)
+                    .setNumberOfCores(3)
                     .build();
 
     new ExecuteAlgorithms<>(experiment).run();

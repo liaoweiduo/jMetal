@@ -370,6 +370,18 @@ public class aspMOEADFS extends AbstractMOEAD<DoubleSolution> {
 					featureNumAssign = new int[]{5, 4, 3, 2, 2, 2, 2, 2};
 				}
 				break;
+			case "Bankruptcy":
+				if (subPopulationNum == 1) {
+					featureNumAssign = new int[]{64};
+				} else if (subPopulationNum == 2) {
+					featureNumAssign = new int[]{43, 21};
+				} else if (subPopulationNum == 4) {
+					featureNumAssign = new int[]{29, 14, 11, 10};
+				} else if (subPopulationNum == 8) {
+					featureNumAssign = new int[]{20, 11, 9, 6, 5, 5, 4, 4};
+				}
+				break;
+
 		}
 
 		sum = featureNumAssign[0]; int assignedIslandIndex = 0;
