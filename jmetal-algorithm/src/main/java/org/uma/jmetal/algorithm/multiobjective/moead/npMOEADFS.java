@@ -59,10 +59,12 @@ public class npMOEADFS extends MOEADSTAT {
 
 			} else {
 				// check sub process state.
-				checkSubProcessState(subProcessState);
+				checkSubProcessState(subProcessState,0,processorNumber);
 				idleProcessorNumber = processorNumber;
 			}
 		}
+
+		checkSubProcessState(subProcessState,idleProcessorNumber,processorNumber - idleProcessorNumber);
 	}
 
 	protected void submitToSlaves (List<Integer> indexToAdd) {	// submit processorNumber tasks until finished
@@ -79,14 +81,16 @@ public class npMOEADFS extends MOEADSTAT {
 
 			} else {
 				// check sub process state.
-				checkSubProcessState(subProcessState);
+				checkSubProcessState(subProcessState,0,processorNumber);
 				idleProcessorNumber = processorNumber;
 			}
 		}
+
+		checkSubProcessState(subProcessState,idleProcessorNumber,processorNumber - idleProcessorNumber);
 	}
 
-	protected void checkSubProcessState (Future[] subProcessState) {
-		for (int subProcessIndex = 0; subProcessIndex < subProcessState.length; subProcessIndex ++){
+	protected void checkSubProcessState (Future[] subProcessState, int from, int length) {
+		for (int subProcessIndex = from; subProcessIndex < from + length; subProcessIndex ++){
 			try {
 				subProcessState[subProcessIndex].get();
 			} catch (InterruptedException e) {

@@ -6,9 +6,7 @@ import org.uma.jmetal.problem.Problem;
 import org.uma.jmetal.problem.multiobjective.FeatureSelection.FeatureSelection;
 import org.uma.jmetal.solution.DoubleSolution;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Future;
 
 public class sfpMOEADFS extends npMOEADFS {
@@ -34,6 +32,10 @@ public class sfpMOEADFS extends npMOEADFS {
 
 		// sort childList in ascending order of time
 		List<DoubleSolution> childListArray = Arrays.asList(childList);
+		Map<DoubleSolution, Integer> childMap = new HashMap<>();
+		for (int i = 0; i < childList.length; i++){
+			childMap.put(childList[i], i);
+		}
 		childListArray.sort(new Comparator<DoubleSolution>() {
 			@Override
 			public int compare(DoubleSolution o1, DoubleSolution o2) {	//降序
@@ -55,12 +57,15 @@ public class sfpMOEADFS extends npMOEADFS {
 			NeighborType neighborType = chooseNeighborType();
 			DoubleSolution child = childListArray.get(i);
 
-			evaluateRunable evaluateChildProcess = new evaluateRunable(child, i, neighborType);
+			// 获得 child在 childlist中的index
+			int index = childMap.get(child);
+
+			evaluateRunable evaluateChildProcess = new evaluateRunable(child, index, neighborType);
 			subProcessState[i] = executorService.submit(evaluateChildProcess);
 		}
 
 		// check sub process state.
-		checkSubProcessState(subProcessState);
+		checkSubProcessState(subProcessState,0,populationSize);
 	}
 
 	@Override
@@ -72,7 +77,7 @@ public class sfpMOEADFS extends npMOEADFS {
 			subProcessState[i] = executorService.submit(fixProcess);
 		}
 
-		checkSubProcessState(subProcessState);
+		checkSubProcessState(subProcessState,0,indexToAdd.size());
 	}
 
 	@Override

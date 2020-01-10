@@ -37,6 +37,10 @@ public class ffpMOEADFS extends npMOEADFS {
 
 		// sort childList in ascending order of time
 		List<DoubleSolution> childListArray = Arrays.asList(childList);
+		Map<DoubleSolution, Integer> childMap = new HashMap<>();
+		for (int i = 0; i < childList.length; i++){
+			childMap.put(childList[i], i);
+		}
 		childListArray.sort(new Comparator<DoubleSolution>() {
 			@Override
 			public int compare(DoubleSolution o1, DoubleSolution o2) {	// 升序
@@ -58,12 +62,15 @@ public class ffpMOEADFS extends npMOEADFS {
 			NeighborType neighborType = chooseNeighborType();
 			DoubleSolution child = childListArray.get(i);
 
-			evaluateRunable evaluateChildProcess = new evaluateRunable(child, i, neighborType);
+			// 获得 child在 childlist中的index
+			int index = childMap.get(child);
+
+			evaluateRunable evaluateChildProcess = new evaluateRunable(child, index, neighborType);
 			subProcessState[i] = executorService.submit(evaluateChildProcess);
 		}
 
 		// check sub process state.
-		checkSubProcessState(subProcessState);
+		checkSubProcessState(subProcessState,0,populationSize);
 	}
 
 	@Override
@@ -75,7 +82,7 @@ public class ffpMOEADFS extends npMOEADFS {
 			subProcessState[i] = executorService.submit(fixProcess);
 		}
 
-		checkSubProcessState(subProcessState);
+		checkSubProcessState(subProcessState,0,indexToAdd.size());
 	}
 
 	@Override

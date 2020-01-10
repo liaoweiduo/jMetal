@@ -59,19 +59,28 @@ public class MOEADSTAT extends AbstractMOEAD<DoubleSolution> {
 				recordSolutions.add(list);
 			}
 
+			DoubleSolution[] childList = new DoubleSolution[populationSize];
 			for (int i = 0; i < populationSize; i++) {
 				int subProblemId = permutation[i];
 
-				NeighborType neighborType = chooseNeighborType() ;
-				List<DoubleSolution> parents = parentSelection(subProblemId, neighborType) ;
+				NeighborType neighborType = chooseNeighborType();
+				List<DoubleSolution> parents = parentSelection(subProblemId, neighborType);
 
 				differentialEvolutionCrossover.setCurrentSolution(population.get(subProblemId));
 				List<DoubleSolution> children = crossoverOperator.execute(parents);
-				DoubleSolution child = children.get(0) ;
+				DoubleSolution child = children.get(0);
 				mutationOperator.execute(child);
 
 				//repairSolutionSequentially(child, this.refPoints[i]);
-				((FeatureSelection)this.problem).reduceSize(child, refPoints[subProblemId]);
+				((FeatureSelection) this.problem).reduceSize(child, refPoints[subProblemId]);
+
+				childList[subProblemId] = child;    // child 按照weight vector次序排列
+			}
+
+			for (int i = 0; i < populationSize; i++){
+				int subProblemId = permutation[i];
+				NeighborType neighborType = chooseNeighborType();
+				DoubleSolution child = childList[subProblemId];
 
 				problem.evaluate(child);
 				evaluations++;

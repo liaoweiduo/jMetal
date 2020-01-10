@@ -165,8 +165,8 @@ public class ParallelMOEADFeatureSelection {
                     .setNumberOfCores(3)
                     .build();
 
-    new ExecuteAlgorithms<>(experiment).run();
-//    new ComputeQualityIndicators<>(experiment).run();
+//    new ExecuteAlgorithms<>(experiment).run();
+    new ComputeQualityIndicators<>(experiment).run();
 //    new GenerateLatexTablesWithStatistics(experiment).run();
 //    new GenerateWilcoxonTestTablesWithR<>(experiment).run();
 //    new GenerateFriedmanTestTables<>(experiment).run();
