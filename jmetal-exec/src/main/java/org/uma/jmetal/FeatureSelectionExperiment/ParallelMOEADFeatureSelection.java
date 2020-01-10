@@ -96,6 +96,7 @@ public class ParallelMOEADFeatureSelection {
 //      problemList.add(new ExperimentProblem<>(new MFCC()));
 //      problemList.add(new ExperimentProblem<>(new MultipleFeatures()));
 //      problemList.add(new ExperimentProblem<>(new C2K()));
+//      problemList.add(new ExperimentProblem<>(new Bankruptcy()));
       switch (PROBLEM) {
           case "Australian":
               problemList.add(new ExperimentProblem<>(new Australian()));
@@ -132,6 +133,9 @@ public class ParallelMOEADFeatureSelection {
               break;
           case "MFCC":
               problemList.add(new ExperimentProblem<>(new MFCC()));
+              break;
+          case "Bankruptcy":
+              problemList.add(new ExperimentProblem<>(new Bankruptcy()));
               break;
       }
       List<ExperimentAlgorithm<DoubleSolution, List<DoubleSolution>>> algorithmList = new ArrayList<>();
