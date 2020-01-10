@@ -162,11 +162,11 @@ public class ParallelMOEADFeatureSelection {
                             new InvertedGenerationalDistance<DoubleSolution>(),
                             new InvertedGenerationalDistancePlus<DoubleSolution>()))
                     .setIndependentRuns(RUN_TO-RUN_FROM+1)
-                    .setNumberOfCores(3)
+                    .setNumberOfCores(5)
                     .build();
 
-//    new ExecuteAlgorithms<>(experiment).run();
-    new ComputeQualityIndicators<>(experiment).run();
+    new ExecuteAlgorithms<>(experiment).run();
+//    new ComputeQualityIndicators<>(experiment).run();
 //    new GenerateLatexTablesWithStatistics(experiment).run();
 //    new GenerateWilcoxonTestTablesWithR<>(experiment).run();
 //    new GenerateFriedmanTestTables<>(experiment).run();
