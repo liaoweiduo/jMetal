@@ -27,7 +27,7 @@ import static java.util.stream.Collectors.toList;
  *
  * Reference input:
  * 1) Experiments/GetData/data/oipMOEAD-FS-1/Vehicle Experiments/GetData/data/oipMOEAD-FS-1/FUN_Vehicle.tsv Vehicle
- * 2) Experiments/GetData/data jmetal-core/src/main/resources/pareto_fronts/Vehicle.pf Vehicle
+ * 2) Experiments/ParallelMOEADFeatureSelection/data jmetal-core/src/main/resources/pareto_fronts/MFCC.pf MFCC
  * @author Antonio J. Nebro <antonio@lcc.uma.es>
  */
 public class GenerateReferenceFrontFromFile {
