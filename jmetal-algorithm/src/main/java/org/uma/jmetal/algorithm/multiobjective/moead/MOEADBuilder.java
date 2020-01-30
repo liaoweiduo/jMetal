@@ -17,7 +17,7 @@ import org.uma.jmetal.util.AlgorithmBuilder;
 public class MOEADBuilder implements AlgorithmBuilder<AbstractMOEAD<DoubleSolution>> {
   public enum Variant {MOEAD, ConstraintMOEAD, MOEADDRA, MOEADSTM, MOEADD,
     MOEADSTAT, oipMOEADFS, aspMOEADFS, rdpMOEADFS,
-    pMOEADSTAT,npMOEADFS, ffpMOEADFS, sfpMOEADFS} ;
+    pMOEADSTAT,npMOEADFS, ffpMOEADFS, sfpMOEADFS, rMSM} ;
 
   protected Problem<DoubleSolution> problem ;
 
@@ -250,6 +250,10 @@ public class MOEADBuilder implements AlgorithmBuilder<AbstractMOEAD<DoubleSoluti
               maximumNumberOfReplacedSolutions, neighborSize, numberOfThreads);
     } else if (moeadVariant.equals(Variant.sfpMOEADFS)) {
       algorithm = new sfpMOEADFS(problem, populationSize, resultPopulationSize, maxEvaluations, crossover, mutation,
+              functionType, dataDirectory, neighborhoodSelectionProbability,
+              maximumNumberOfReplacedSolutions, neighborSize, numberOfThreads);
+    } else if (moeadVariant.equals(Variant.rMSM)) {
+      algorithm = new rMSM(problem, populationSize, resultPopulationSize, maxEvaluations, crossover, mutation,
               functionType, dataDirectory, neighborhoodSelectionProbability,
               maximumNumberOfReplacedSolutions, neighborSize, numberOfThreads);
     }
